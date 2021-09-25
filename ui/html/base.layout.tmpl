@@ -4,7 +4,6 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<meta http-equiv="x-ua-compatible" content="ie=edge">
 
 		<link rel="stylesheet" href="/ui/node_modules/bootstrap/dist/css/bootstrap.min.css">
     	<link rel="stylesheet" href="/ui/node_modules/font-awesome/css/font-awesome.min.css">
@@ -15,12 +14,20 @@
 	<body>
 		
 		<header class="jumbotron">
-			<div class="container">
-				<div class="text-center mt-5 mb-5">
-					<h1>watchess.org</h1>
-					<p class="lead">Never pay to watch your favorite player lose</p>
-				</div>
-			</div>
+			{{block "navbar" .}}
+				<header id="header">
+					<div class="container d-flex align-items-center justify-content-between">
+						<div class="logo">
+							<h1><a href="/">watchess<span>.org</span></a></h1>
+						</div>
+						<nav id="navbar" class="navbar">
+							<ul>
+								<li><a class="adminlogin" href="">Admin Login</a></li>
+							</ul>
+						</nav>
+					</div>
+				</header>
+			{{end}}
 		</header>
 		{{template "body" .}}
 		{{block "footer" .}}

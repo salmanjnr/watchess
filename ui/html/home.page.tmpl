@@ -1,49 +1,43 @@
 {{template "base" .}} 
  
 {{define "title"}}watchess.org{{end}} 
- 
+
 {{define "body"}} 
-	<div class="container">
-		<div class="row justify-content-center">
-			<div class="search-box">
-				<div class="input-group rounded">
-					<input type="search" class="form-control rounded" placeholder="Search tournaments" aria-label="Search" aria-describedby="search-addon" />
-					<span class="input-group-text border-0" id="search-addon">
-						<i class="fa fa-search"></i>
-					</span>
-				</div>
-			</div>
-		</div>
-	</div>
 	{{if .Tournaments}}
 		{{with .Tournaments.Active}}
-			<div class="container">
+			<div class="container px-4 px-lg-5 mt-5">
 				<div class="text-center">
-					<h2 class="text-uppercase mb-3 mt-5">Featured</h2>
-				</div class="text-center">
-				{{range .}}
-					{{template "tournamentCard" .}}
-				{{end}}
+					<h2 class="tournament-title text-uppercase mb-3 mt-5">Active</h2>
+				</div>
+                <div class="row row-cols-1 row-cols-lg-2 justify-content-center">
+					{{range .}}
+						{{template "tournamentCard" .}}
+					{{end}}
+				</div>
 			</div>
 		{{end}}
 		{{with .Tournaments.Upcoming}}
-			<div class="container">
+			<div class="container px-4 px-lg-5 mt-5">
 				<div class="text-center">
-					<h2 class="text-uppercase mb-3 mt-5">Upcoming</h2>
-				</div class="text-center">
-				{{range .}}
-					{{template "tournamentCard" .}}
-				{{end}}
+					<h2 class="tournament-title text-uppercase mb-3 mt-5">Upcoming</h2>
+				</div>
+                <div class="row row-cols-2 justify-content-center">
+					{{range .}}
+						{{template "tournamentCard" .}}
+					{{end}}
+				</div>
 			</div>
 		{{end}}
 		{{with .Tournaments.Finished}}
-			<div class="container">
+			<div class="container px-4 px-lg-5 mt-5">
 				<div class="text-center">
-					<h2 class="text-uppercase mb-3 mt-5">Finished</h2>
-				</div class="text-center">
-				{{range .}}
-					{{template "tournamentCard" .}}
-				{{end}}
+					<h2 class="tournament-title text-uppercase mb-3 mt-5">Finished</h2>
+				</div>
+                <div class="row row-cols-2 justify-content-center">
+					{{range .}}
+						{{template "tournamentCard" .}}
+					{{end}}
+				</div>
 			</div>
 		{{end}}
 	{{else}}

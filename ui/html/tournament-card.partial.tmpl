@@ -1,9 +1,17 @@
 {{define "tournamentCard"}}
-<div class="row mb-3 no-gutters bg-light position-relative tournament-card">
-	<div class="col-12 position-static p-4 pl-md-0">
-		<h4 class="mt-0">{{if .IsLive}}<span class="tournament-status">LIVE</span> {{end}}{{.Name}}</h4>
-		<p>{{.ShortDescription}}</p>
-		<a href="#" class="stretched-link"></a>
+<div class="col mb-5">
+	<div class="card">
+		<div class="card-body p-4">
+			<div class="text-center">
+				<!-- Product name-->
+				<h5 class="fw-bolder">{{.Name}}</h5>
+				{{.ShortDescription}}
+			</div>
+		</div>
+		<!-- Product actions-->
+		<div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+			<div class="text-center"><a class="btn mt-auto tournament-btn" href="">Visit Tournament</a></div>
+		</div>
 	</div>
 </div>
 {{end}}
