@@ -29,9 +29,9 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 	}
 
-	if len(active) + len(finished) + len(upcoming) != 0 {
+	if len(active)+len(finished)+len(upcoming) != 0 {
 		td.Tournaments = &tournaments{
-			Active: active,
+			Active:   active,
 			Finished: finished,
 			Upcoming: upcoming,
 		}
@@ -51,7 +51,7 @@ func (app *application) createTournament(w http.ResponseWriter, r *http.Request)
 	}
 
 	form := forms.New(r.PostForm)
-	form.Required("name", "short-description", "long-description", "start-date", "end-date")
+	form.Required("name", "short-description", "start-date", "end-date")
 	form.MaxLength("short-description", 100)
 	startDate, endDate := form.DatePair("start-date", "end-date")
 

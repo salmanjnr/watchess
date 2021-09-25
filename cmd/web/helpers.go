@@ -25,7 +25,7 @@ func (app *application) notFound(w http.ResponseWriter) {
 }
 
 // Write rendered html to http.ResponseWriter
-func (app *application) render(w http.ResponseWriter,r *http.Request, name string, td *templateData) {
+func (app *application) render(w http.ResponseWriter, r *http.Request, name string, td *templateData) {
 	ts, ok := app.templateCache[name]
 	if !ok {
 		app.serverError(w, fmt.Errorf("The template %s does not exist", name))

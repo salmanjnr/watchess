@@ -12,7 +12,6 @@ type TournamentModel struct {
 	DB *sql.DB
 }
 
-
 // Insert row into tournaments table
 func (m *TournamentModel) Insert(name, shortDescription, longDescription string, hasStandings bool, startDate, endDate time.Time, isLive bool) (int, error) {
 	// Use placeholder instead of string interpolation to avoid SQL injection
@@ -45,12 +44,11 @@ func (m *TournamentModel) Get(id int) (*models.Tournament, error) {
 
 	if err == sql.ErrNoRows {
 		return nil, models.ErrNoRecord
-	} else if err != nil{
+	} else if err != nil {
 		return nil, err
 	}
 	return t, nil
 }
-
 
 func (m *TournamentModel) scanTournaments(constraint string) ([]*models.Tournament, error) {
 	stmt := "SELECT id, name, short_description, long_description, has_standings, start_date, end_date, is_live FROM tournaments " + constraint
@@ -64,7 +62,7 @@ func (m *TournamentModel) scanTournaments(constraint string) ([]*models.Tourname
 	defer rows.Close()
 
 	var tournaments []*models.Tournament
-	
+
 	for rows.Next() {
 		t := &models.Tournament{}
 		err = rows.Scan(&t.ID, &t.Name, &t.ShortDescription, &t.LongDescription, &t.HasStandings, &t.StartDate, &t.EndDate, &t.IsLive)

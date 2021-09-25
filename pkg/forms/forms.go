@@ -84,7 +84,7 @@ func (f *Form) DatePair(startField, endField string) (*time.Time, *time.Time) {
 		return nil, nil
 	}
 	// Make tournament relevant until the end of the day. This method is okay because Date always returns time at 00:00:00
-	endDate.Add(time.Hour * 23 + time.Minute * 59 + time.Second * 59)
+	endDate.Add(time.Hour*23 + time.Minute*59 + time.Second*59)
 	return startDate, endDate
 }
 

@@ -7,41 +7,41 @@ import (
 )
 
 var mockTournament1 = &models.Tournament{
-	ID: 1,
-	Name: "Norway Chess",
+	ID:               1,
+	Name:             "Norway Chess",
 	ShortDescription: "Magnus returns to his home country to compete against many 2700+",
-	LongDescription: "Magnus returns to his home country to compete against many 2700+, including Nepo, his challenger for the WC title.",
-	HasStandings: true,
-	StartDate: time.Date(2021, time.Month(9), 7, 17, 0, 0, 0, time.UTC),
-	EndDate: time.Date(2021, time.Month(9), 17, 22, 0, 0, 0, time.UTC),
-	IsLive: false,
+	LongDescription:  "Magnus returns to his home country to compete against many 2700+, including Nepo, his challenger for the WC title.",
+	HasStandings:     true,
+	StartDate:        time.Date(2021, time.Month(9), 7, 17, 0, 0, 0, time.UTC),
+	EndDate:          time.Date(2021, time.Month(9), 17, 22, 0, 0, 0, time.UTC),
+	IsLive:           false,
 }
 
 var mockTournament2 = &models.Tournament{
-	ID: 2,
-	Name: "Future World Chess Championship",
+	ID:               2,
+	Name:             "Future World Chess Championship",
 	ShortDescription: "Magnus vs challenger",
-	LongDescription: "Magnus vs challenger (possibly Alireze)",
-	HasStandings: false,
-	StartDate: time.Date(2031, time.Month(9), 7, 17, 0, 0, 0, time.UTC),
-	EndDate: time.Date(2031, time.Month(9), 17, 22, 0, 0, 0, time.UTC),
-	IsLive: false,
+	LongDescription:  "Magnus vs challenger (possibly Alireze)",
+	HasStandings:     false,
+	StartDate:        time.Date(2031, time.Month(9), 7, 17, 0, 0, 0, time.UTC),
+	EndDate:          time.Date(2031, time.Month(9), 17, 22, 0, 0, 0, time.UTC),
+	IsLive:           false,
 }
 
 var mockTournament3 = &models.Tournament{
-	ID: 3,
-	Name: "Happening Now",
+	ID:               3,
+	Name:             "Happening Now",
 	ShortDescription: "This tournament is live",
-	LongDescription: "",
-	HasStandings: true,
-	StartDate: time.Date(2021, time.Month(9), 7, 17, 0, 0, 0, time.UTC),
-	EndDate: time.Date(2031, time.Month(9), 17, 22, 0, 0, 0, time.UTC),
-	IsLive: true,
+	LongDescription:  "",
+	HasStandings:     true,
+	StartDate:        time.Date(2021, time.Month(9), 7, 17, 0, 0, 0, time.UTC),
+	EndDate:          time.Date(2031, time.Month(9), 17, 22, 0, 0, 0, time.UTC),
+	IsLive:           true,
 }
 
 type TournamentModel struct{}
 
-func (m *TournamentModel) Insert(name, shortDescription, longDescription string, hasStandings bool, startDate, endDate time.Time, isLive bool) (int, error)  {
+func (m *TournamentModel) Insert(name, shortDescription, longDescription string, hasStandings bool, startDate, endDate time.Time, isLive bool) (int, error) {
 	return 1, nil
 }
 
