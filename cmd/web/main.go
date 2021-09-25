@@ -11,6 +11,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/golangcollege/sessions"
 	"watchess.org/watchess/pkg/models"
 	"watchess.org/watchess/pkg/models/mysql"
 )
@@ -26,11 +27,13 @@ type application struct {
 		LatestFinished(int) ([]*models.Tournament, error)
 		Upcoming(int) ([]*models.Tournament, error)
 	}
+	session *sessions.Session
 }
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	dsn := flag.String("dsn", "web:pass@/watchess?parseTime=true", "MariaDB data source name")
+	secret := flag.String("secret", "a3BBA+69e27UvVv&K9P12nasdk@89ue!", "Session encryption key")
 	flag.Parse()
 
 	if (*addr)[0] != ':' {
@@ -49,11 +52,14 @@ func main() {
 
 	tc, err := newTemplateCache("./ui/html")
 
+	session := sessions.New([]byte(*secret))
+
 	app := &application{
 		errorLog:      errorLog,
 		infoLog:       infoLog,
 		templateCache: tc,
 		tournaments:   &mysql.TournamentModel{DB: db},
+		session: session,
 	}
 
 	srv := &http.Server{

@@ -9,6 +9,7 @@ import (
 
 type templateData struct {
 	Tournaments *tournaments
+	CSRFToken 	string
 }
 
 type tournaments struct {

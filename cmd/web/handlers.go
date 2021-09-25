@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/justinas/nosurf"
 	"watchess.org/watchess/pkg/forms"
 )
 
@@ -41,7 +42,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) createTournamentForm(w http.ResponseWriter, r *http.Request) {
-	app.render(w, r, "create.page.tmpl", nil)
+	td := &templateData{
+		CSRFToken: nosurf.Token(r),
+	}
+	app.render(w, r, "create.page.tmpl", td)
 }
 
 func (app *application) createTournament(w http.ResponseWriter, r *http.Request) {

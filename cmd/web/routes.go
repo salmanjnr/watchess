@@ -4,18 +4,23 @@ import (
 	"net/http"
 
 	"github.com/bmizerany/pat"
+	"github.com/justinas/alice"
 )
 
 func (app *application) routes() http.Handler {
+	standardMiddleware := alice.New()
+	dynamicMiddleware := alice.New(app.session.Enable)
+	formMiddleware := dynamicMiddleware.Append(noSurf)
+
 	mux := pat.New()
 
-	mux.Get("/", http.HandlerFunc(app.home))
+	mux.Get("/", dynamicMiddleware.ThenFunc(app.home))
+	mux.Get("/tournaments/create", formMiddleware.ThenFunc(app.createTournamentForm))
+	mux.Post("/tournaments/create", formMiddleware.ThenFunc(app.createTournament))
 	mux.Get("/ping", http.HandlerFunc(ping))
-	mux.Get("/tournaments/create", http.HandlerFunc(app.createTournamentForm))
-	mux.Post("/tournaments/create", http.HandlerFunc(app.createTournament))
 
 	fileServer := http.FileServer(http.Dir("./ui/"))
 	mux.Get("/ui/", http.StripPrefix("/ui", fileServer))
 
-	return mux
+	return standardMiddleware.Then(mux)
 }
