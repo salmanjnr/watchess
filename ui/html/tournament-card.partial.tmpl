@@ -1,0 +1,9 @@
+{{define "tournamentCard"}}
+<div class="row mb-3 no-gutters bg-light position-relative tournament-card">
+	<div class="col-12 position-static p-4 pl-md-0">
+		<h4 class="mt-0">{{if .IsLive}}<span class="tournament-status">LIVE</span> {{end}}{{.Name}}</h4>
+		<p>{{.ShortDescription}}</p>
+		<a href="#" class="stretched-link"></a>
+	</div>
+</div>
+{{end}}

@@ -1,0 +1,56 @@
+{{template "base" .}} 
+ 
+{{define "title"}}watchess.org{{end}} 
+ 
+{{define "body"}} 
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="search-box">
+				<div class="input-group rounded">
+					<input type="search" class="form-control rounded" placeholder="Search tournaments" aria-label="Search" aria-describedby="search-addon" />
+					<span class="input-group-text border-0" id="search-addon">
+						<i class="fa fa-search"></i>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	{{if .Tournaments}}
+		{{with .Tournaments.Active}}
+			<div class="container">
+				<div class="text-center">
+					<h2 class="text-uppercase mb-3 mt-5">Featured</h2>
+				</div class="text-center">
+				{{range .}}
+					{{template "tournamentCard" .}}
+				{{end}}
+			</div>
+		{{end}}
+		{{with .Tournaments.Upcoming}}
+			<div class="container">
+				<div class="text-center">
+					<h2 class="text-uppercase mb-3 mt-5">Upcoming</h2>
+				</div class="text-center">
+				{{range .}}
+					{{template "tournamentCard" .}}
+				{{end}}
+			</div>
+		{{end}}
+		{{with .Tournaments.Finished}}
+			<div class="container">
+				<div class="text-center">
+					<h2 class="text-uppercase mb-3 mt-5">Finished</h2>
+				</div class="text-center">
+				{{range .}}
+					{{template "tournamentCard" .}}
+				{{end}}
+			</div>
+		{{end}}
+	{{else}}
+		<div class="container">
+			<div class="text-center">
+				<h4 class="text-uppercase mb-3 mt-5">Nothing to show yet</h4>
+			</div class="text-center">
+		</div>
+	{{end}}
+{{end}}

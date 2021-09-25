@@ -1,0 +1,41 @@
+@media (min-width: 1200px) {
+    .container{
+        max-width: 970px;
+    }
+}
+
+.search-box {
+	max-width: 585px !important;
+}
+
+.tournament-card {
+	min-height: 150px;
+}
+.tournament-card :hover {
+  	background-color: #CDD9E4;
+}
+
+.tournament-status {
+	font-weight: bold !important;
+	color: #04AA6D !important;
+}
+
+div.error {
+    color: #FFFFFF;
+    background-color: #C0392B;
+    padding: 18px;
+    margin-bottom: 36px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.error {
+    color: #C0392B;
+    font-weight: bold;
+    display: block;
+}
+
+.error + textarea, .error + input {
+    border-color: #C0392B !important;
+    border-width: 2px !important;
+}
