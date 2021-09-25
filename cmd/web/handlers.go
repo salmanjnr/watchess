@@ -56,7 +56,9 @@ func (app *application) createTournament(w http.ResponseWriter, r *http.Request)
 
 	form := forms.New(r.PostForm)
 	form.Required("name", "short-description", "start-date", "end-date")
-	form.MaxLength("short-description", 100)
+	form.MaxLength("name", app.config.tournament.nameMax)
+	form.MaxLength("short-description", app.config.tournament.shortDescriptionMax)
+	form.MaxLength("long-description", app.config.tournament.longDescriptionMax)
 	startDate, endDate := form.DatePair("start-date", "end-date")
 
 	if !form.Valid() {

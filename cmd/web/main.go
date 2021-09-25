@@ -19,6 +19,7 @@ import (
 type application struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
+	config        config
 	templateCache map[string]*template.Template
 	tournaments   interface {
 		Insert(string, string, string, bool, time.Time, time.Time, bool) (int, error)
@@ -59,7 +60,7 @@ func main() {
 		infoLog:       infoLog,
 		templateCache: tc,
 		tournaments:   &mysql.TournamentModel{DB: db},
-		session: session,
+		session:       session,
 	}
 
 	srv := &http.Server{
