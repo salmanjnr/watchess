@@ -15,23 +15,36 @@
 		
 		<header class="jumbotron">
 			{{block "navbar" .}}
-				<header id="header">
-					<div class="container d-flex align-items-center justify-content-between">
-						<div class="logo">
-							<h1><a href="/">watchess<span>.org</span></a></h1>
-						</div>
-						<nav id="navbar" class="navbar">
-							<ul>
-								<li><a class="adminlogin" href="">Admin Login</a></li>
-							</ul>
-						</nav>
+			<nav class="navbar navbar-expand-lg">
+				<div class="container-fluid">
+					<div id="logo">
+						<h1><a href="#">watchess<span>.org</span></a></h1>
 					</div>
-				</header>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+						<li>
+							<form class="d-flex">
+								<input id="searchbox" class="form-control" type="text" name="search" placeholder="Search"/>
+								<input type="submit" class="d-none"/>
+							</form>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link adminlogin" href="">Admin Login</a>
+						</li>
+					</ul>
+				</div>
+			  </div>
+			</nav>
 			{{end}}
 		</header>
 		{{template "body" .}}
 		{{block "footer" .}}
 		{{end}}
+
+    	<script src="/ui/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 	</body>
 </html>
 {{end}}

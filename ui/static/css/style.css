@@ -10,14 +10,12 @@ body {
 }
 
 #header {
-  z-index: 997;
-  padding: 16px 0;
   background: #131313;
 }
 
-#header .logo h1 {
-  font-size: 24px;
-  margin: 0;
+#logo h1 {
+  font-size: 24px !important;
+  margin: 5px;
   padding: 10px 0;
   line-height: 1;
   font-weight: 700;
@@ -26,32 +24,28 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
-#header .logo h1 a, #header .logo h1 a:hover {
-  color: #fff;
+#logo h1 a, #logo h1 a:hover {
+  color: #fff !important;
   text-decoration: none;
 }
 
-#header .logo h1 a span, #header .logo h1 a:hover span {
-  color: #04A290;
+#logo h1 a span, #logo h1 a:hover span {
+  color: #04A290 !important;
 }
 
-.navbar {
-  padding: 0;
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
 }
 
-.navbar ul {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  list-style: none;
-  align-items: center;
+.navbar li {
+	margin: 5px;
 }
 
 .navbar .adminlogin, .navbar .adminlogin:focus {
   background: #131313;
   color: #fff;
   padding: 4px 25px 6px 25px;
-  margin-left: 30px;
+  /*margin-left: 30px;*/
   border-radius: 50px;
   border: 2px solid #04A290;
 }
@@ -123,10 +117,21 @@ input[type=text] {
 input[type=text]:focus {
 	background-color: #131313;
 	color: #04A290;
-  	border: none;
+  	border: none !important;
   	border-bottom: 2px solid #04A290;
    	-webkit-box-shadow: none !important;
   	box-shadow: none !important;
+}
+
+#searchbox {
+	text-align: center;
+	font-size: 13px !important;
+}
+
+#searchbox:focus {
+  	border: none !important;
+  	border-bottom: 2px solid #04A290 !important;
+	outline: none !important;
 }
 
 textarea {
