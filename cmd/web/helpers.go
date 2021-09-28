@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"runtime/debug"
+
+	"github.com/justinas/nosurf"
+	"watchess.org/watchess/pkg/models"
 )
 
 // Send 500 to user and log error
@@ -35,11 +38,31 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, name stri
 	// First write to buffer to make sure no error happens
 	// If everything is okay, write buffer content to w
 	buf := new(bytes.Buffer)
-	err := ts.Execute(buf, td)
+	err := ts.Execute(buf, app.addDefaultData(td, r))
 	if err != nil {
 		app.serverError(w, err)
 		return
 	}
 
 	buf.WriteTo(w)
+}
+
+// Return the User struct of the current logged in user or nil if no user
+func (app *application) authenticatedUser(r *http.Request) *models.User {
+	user, ok := r.Context().Value(contextKeyUser).(*models.User)
+	if !ok {
+		return nil
+	}
+	return user
+}
+
+// Populate templateData with default values
+func (app *application) addDefaultData(td *templateData, r *http.Request) *templateData {
+	if td == nil {
+		td = &templateData{}
+	}
+	// Search form is present on every page
+	td.CSRFToken = nosurf.Token(r)
+	td.AuthenticatedUser = app.authenticatedUser(r)
+	return td
 }

@@ -9,14 +9,20 @@ import (
 
 func (app *application) routes() http.Handler {
 	standardMiddleware := alice.New()
-	dynamicMiddleware := alice.New(app.session.Enable)
-	formMiddleware := dynamicMiddleware.Append(noSurf)
+	dynamicMiddleware := alice.New(app.session.Enable, noSurf, app.authenticate)
 
 	mux := pat.New()
 
 	mux.Get("/", dynamicMiddleware.ThenFunc(app.home))
-	mux.Get("/tournaments/create", formMiddleware.ThenFunc(app.createTournamentForm))
-	mux.Post("/tournaments/create", formMiddleware.ThenFunc(app.createTournament))
+	mux.Get("/tournaments/create", dynamicMiddleware.ThenFunc(app.createTournamentForm))
+	mux.Post("/tournaments/create", dynamicMiddleware.ThenFunc(app.createTournament))
+
+	mux.Get("/user/signup", dynamicMiddleware.ThenFunc(app.signupUserForm))
+	mux.Post("/user/signup", dynamicMiddleware.ThenFunc(app.signupUser))
+	mux.Get("/user/login", dynamicMiddleware.ThenFunc(app.loginUserForm))
+	mux.Post("/user/login", dynamicMiddleware.ThenFunc(app.loginUser))
+	mux.Post("/user/logout", dynamicMiddleware.ThenFunc(app.logoutUser))
+
 	mux.Get("/ping", http.HandlerFunc(ping))
 
 	fileServer := http.FileServer(http.Dir("./ui/"))

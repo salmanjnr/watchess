@@ -31,9 +31,26 @@
 								<input type="submit" class="d-none"/>
 							</form>
 						</li>
-						<li class="nav-item">
-							<a class="nav-link adminlogin" href="">Admin Login</a>
+						{{if .AuthenticatedUser}}
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+							{{.AuthenticatedUser.Name}}
+						  	</a>
+							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+								<li><a class="dropdown-item" href="#">Create Tournament</a></li>
+								<li>
+									<form action='/user/logout' method='POST'>
+										<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+										<button class="dropdown-item" id="logout-btn" type="submit">Logout</button>
+									</form>
+								</li>
+						  	</ul>
 						</li>
+						{{else}}
+						<li class="nav-item">
+							<a class="nav-link adminlogin" href="/user/login">Admin Login</a>
+						</li>
+						{{end}}
 					</ul>
 				</div>
 			  </div>

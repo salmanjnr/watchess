@@ -4,12 +4,15 @@ import (
 	"html/template"
 	"path/filepath"
 
+	"watchess.org/watchess/pkg/forms"
 	"watchess.org/watchess/pkg/models"
 )
 
 type templateData struct {
-	Tournaments *tournaments
-	CSRFToken   string
+	Tournaments       *tournaments
+	CSRFToken         string
+	Form              *forms.Form
+	AuthenticatedUser *models.User
 }
 
 type tournaments struct {

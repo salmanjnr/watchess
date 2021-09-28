@@ -3,11 +3,14 @@ package forms
 import (
 	"fmt"
 	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
 	"unicode/utf8"
 )
+
+var EmailRX = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 // Parsed form key-value pairs and form-related errors
 type Form struct {
@@ -44,6 +47,17 @@ func (f *Form) Numerical(fields ...string) {
 		if err != nil {
 			f.Errors.Add(field, "This field should have a numerical value")
 		}
+	}
+}
+
+// Check for min length violations and populate form errors field as apt
+func (f *Form) MinLength(field string, d int) {
+	value := f.Get(field)
+	if value == "" {
+		return
+	}
+	if utf8.RuneCountInString(value) < d {
+		f.Errors.Add(field, fmt.Sprintf("This field is too short (minimum is %d)", d))
 	}
 }
 
@@ -86,6 +100,50 @@ func (f *Form) DatePair(startField, endField string) (*time.Time, *time.Time) {
 	// Make tournament relevant until the end of the day. This method is okay because Date always returns time at 00:00:00
 	endDate.Add(time.Hour*23 + time.Minute*59 + time.Second*59)
 	return startDate, endDate
+}
+
+// Check if value of field is not among the permitted values and populate form errors field as apt
+func (f *Form) PermittedValues(field string, opts ...string) {
+	value := f.Get(field)
+	if value == "" {
+		return
+	}
+	for _, opt := range opts {
+		if value == opt {
+			return
+		}
+	}
+	f.Errors.Add(field, "This field is invalid")
+}
+
+// Check if value of field matches a regex pattern and populate form errors field as apt
+func (f *Form) MatchesPattern(field string, pattern *regexp.Regexp) {
+	value := f.Get(field)
+	if value == "" {
+		return
+	}
+	if !pattern.MatchString(value) {
+		f.Errors.Add(field, "This field is invalid")
+	}
+}
+
+// Wrapper around Form.MatchesPattern for email validation
+func (f *Form) ValidEmail(field string) {
+	f.MatchesPattern(field, EmailRX)
+}
+
+// Check if value of two fields are identical i.e. for password and confirmation
+func (f *Form) Matching(field1, field2 string) {
+	value1 := f.Get(field1)
+	value2 := f.Get(field2)
+	if (value1 == "") || (value2 == "") {
+		return
+	}
+	if value1 != value2 {
+		msg := fmt.Sprintf("%s and %s must match", field1, field2)
+		f.Errors.Add(field1, msg)
+		f.Errors.Add(field2, msg)
+	}
 }
 
 // Check if any error exists in form errors field

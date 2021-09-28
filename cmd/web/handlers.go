@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/justinas/nosurf"
 	"watchess.org/watchess/pkg/forms"
+	"watchess.org/watchess/pkg/models"
 )
 
 func ping(w http.ResponseWriter, r *http.Request) {
@@ -41,11 +41,107 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, "home.page.tmpl", td)
 }
 
-func (app *application) createTournamentForm(w http.ResponseWriter, r *http.Request) {
-	td := &templateData{
-		CSRFToken: nosurf.Token(r),
+func (app *application) signupUserForm(w http.ResponseWriter, r *http.Request) {
+	if app.authenticatedUser(r) != nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
 	}
-	app.render(w, r, "create.page.tmpl", td)
+	app.render(w, r, "signup.page.tmpl", &templateData{
+		Form: forms.New(nil),
+	})
+}
+
+func (app *application) signupUser(w http.ResponseWriter, r *http.Request) {
+	// If user already authenticated, direct them to homepage
+
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+	}
+
+	form := forms.New(r.PostForm)
+	form.Set("role", "admin") // currently, there is no normal users
+
+	form.Required("name", "email", "password", "confirm-password")
+	form.ValidEmail("email")
+	form.Matching("password", "confirm-password")
+	form.MinLength("password", app.config.user.passwordMin)
+	form.MaxLength("name", app.config.user.nameMax)
+	form.MaxLength("email", app.config.user.emailMax)
+	// This will never generate an error because we just set the role value, but we keep it for the future
+	form.PermittedValues("role", app.config.user.validRoles...)
+
+	if !form.Valid() {
+		app.render(w, r, "signup.page.tmpl", &templateData{
+			Form: form,
+		})
+		return
+	}
+
+	userRole, err := models.GetUserRole(form.Get("role"))
+	// At this point, no error should happen because we just validated that the role field has a valid value
+	if err != nil {
+		app.serverError(w, err)
+	}
+
+	id, err := app.users.Insert(form.Get("name"), form.Get("email"), form.Get("password"), *userRole)
+
+	if err == models.ErrDuplicateEmail {
+		form.Errors.Add("email", "Email already registered")
+		app.render(w, r, "signup.page.tmpl", &templateData{
+			Form: form,
+		})
+		return
+	} else if err == models.ErrDuplicateUsername {
+		form.Errors.Add("name", "Username taken")
+		app.render(w, r, "signup.page.tmpl", &templateData{
+			Form: form,
+		})
+		return
+	} else if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.session.Put(r, "userID", id)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func (app *application) loginUserForm(w http.ResponseWriter, r *http.Request) {
+	app.render(w, r, "login.page.tmpl", &templateData{
+		Form: forms.New(nil),
+	})
+}
+
+func (app *application) loginUser(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	form := forms.New(r.PostForm)
+	id, err := app.users.Authenticate(form.Get("email"), form.Get("password"))
+	if err == models.ErrInvalidCredentials {
+		form.Errors.Add("generic", "Email or Password is incorrect")
+		app.render(w, r, "login.page.tmpl", &templateData{Form: form})
+		return
+	} else if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.session.Put(r, "userID", id)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
+	app.session.Remove(r, "userID")
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func (app *application) createTournamentForm(w http.ResponseWriter, r *http.Request) {
+	app.render(w, r, "create.page.tmpl", &templateData{})
 }
 
 func (app *application) createTournament(w http.ResponseWriter, r *http.Request) {

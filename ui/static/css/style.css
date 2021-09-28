@@ -41,6 +41,14 @@ body {
 	margin: 5px;
 }
 
+.navbar li a {
+	color: #fff;
+}
+
+.navbar li a:hover, .navbar li a:focus {
+	color: #04A290;
+}
+
 .navbar .adminlogin, .navbar .adminlogin:focus {
   background: #131313;
   color: #fff;
@@ -52,6 +60,19 @@ body {
 .navbar .adminlogin:hover, .navbar .adminlogin:focus:hover {
   background: #04A290;
   color: #fff;
+}
+
+.navbar .dropdown-menu {
+	background-color: #2E2E2E;
+}
+
+.navbar .dropdown-menu .dropdown-item {
+	color: #fff;
+}
+
+.navbar .dropdown-menu .dropdown-item:hover, .navbar .dropdown-menu .dropdown-item:focus {
+	color: #fff;
+  	background-color: #04A290;
 }
 
 .card {
@@ -106,20 +127,20 @@ a:hover {
   text-decoration: none;
 }
 
-input[type=text], input[type=password]  {
+input[type=text], input[type=password], input[type=email]  {
 	background-color: #131313;
 	color: #fff;
-  	border: none !important;
-  	border-bottom: 2px solid #aaa !important;
+  	border: none;
+  	border-bottom: 2px solid #aaa;
 }
 
-input[type=text]:focus, input[type=password]:focus {
+input[type=text]:focus, input[type=password]:focus, input[type=email]:focus {
 	background-color: #131313;
 	color: #04A290;
-  	border: none !important;
-  	border-bottom: 2px solid #04A290 !important;
-   	-webkit-box-shadow: none !important;
-  	box-shadow: none !important;
+  	border: none;
+  	border-bottom: 2px solid #04A290;
+   	-webkit-box-shadow: none;
+  	box-shadow: none;
 }
 
 #searchbox {

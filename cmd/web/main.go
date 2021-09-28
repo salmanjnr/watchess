@@ -16,6 +16,10 @@ import (
 	"watchess.org/watchess/pkg/models/mysql"
 )
 
+type contextKey string
+
+var contextKeyUser = contextKey("user")
+
 type application struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
@@ -27,6 +31,11 @@ type application struct {
 		LatestActive(int) ([]*models.Tournament, error)
 		LatestFinished(int) ([]*models.Tournament, error)
 		Upcoming(int) ([]*models.Tournament, error)
+	}
+	users interface {
+		Insert(string, string, string, models.UserRole) (int, error)
+		Authenticate(string, string) (int, error)
+		Get(int) (*models.User, error)
 	}
 	session *sessions.Session
 }
@@ -53,13 +62,19 @@ func main() {
 
 	tc, err := newTemplateCache("./ui/html")
 
+	if err != nil {
+		errorLog.Fatalf("Couldn't initialize template cache due to error %v\n", err)
+	}
+
 	session := sessions.New([]byte(*secret))
 
 	app := &application{
 		errorLog:      errorLog,
 		infoLog:       infoLog,
+		config:        getConfig(),
 		templateCache: tc,
 		tournaments:   &mysql.TournamentModel{DB: db},
+		users:         &mysql.UserModel{DB: db},
 		session:       session,
 	}
 
