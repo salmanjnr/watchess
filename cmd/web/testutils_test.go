@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
+	"github.com/golangcollege/sessions"
 	"watchess.org/watchess/pkg/models/mock"
 )
 
@@ -16,11 +18,16 @@ func newTestApplication(t *testing.T) *application {
 		t.Fatal(err)
 	}
 
+	session := sessions.New([]byte("3dSmSMnygFHh7xidAtbskXrjbwfoJcbJ"))
+	session.Lifetime = 12 * time.Hour
+	session.Secure = true
+
 	return &application{
 		errorLog:      log.New(ioutil.Discard, "", 0),
 		infoLog:       log.New(ioutil.Discard, "", 0),
 		tournaments:   &mock.TournamentModel{},
 		templateCache: templateCache,
+		session:       session,
 	}
 }
 
