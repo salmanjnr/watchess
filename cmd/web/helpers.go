@@ -7,13 +7,13 @@ import (
 	"runtime/debug"
 
 	"github.com/justinas/nosurf"
+	"go.uber.org/zap"
 	"watchess.org/watchess/pkg/models"
 )
 
 // Send 500 to user and log error
 func (app *application) serverError(w http.ResponseWriter, err error) {
-	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
-	app.errorLog.Output(2, trace)
+	app.logger.WithOptions(zap.AddCallerSkip(1)).Error("Server error", zap.Error(err), zap.ByteString("stack", debug.Stack()))
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
 

@@ -2,13 +2,14 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
 
 	"github.com/golangcollege/sessions"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"watchess.org/watchess/pkg/models/mock"
 )
 
@@ -22,9 +23,10 @@ func newTestApplication(t *testing.T) *application {
 	session.Lifetime = 12 * time.Hour
 	session.Secure = true
 
+	logger := zap.New(zapcore.NewCore(zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig()), zapcore.AddSync(ioutil.Discard), zapcore.ErrorLevel))
+
 	return &application{
-		errorLog:      log.New(ioutil.Discard, "", 0),
-		infoLog:       log.New(ioutil.Discard, "", 0),
+		logger:        logger,
 		tournaments:   &mock.TournamentModel{},
 		templateCache: templateCache,
 		session:       session,

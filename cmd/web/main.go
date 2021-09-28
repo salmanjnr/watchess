@@ -7,11 +7,12 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golangcollege/sessions"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"watchess.org/watchess/pkg/models"
 	"watchess.org/watchess/pkg/models/mysql"
 )
@@ -21,8 +22,7 @@ type contextKey string
 var contextKeyUser = contextKey("user")
 
 type application struct {
-	errorLog      *log.Logger
-	infoLog       *log.Logger
+	logger        *zap.Logger
 	config        config
 	templateCache map[string]*template.Template
 	tournaments   interface {
@@ -44,18 +44,28 @@ func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	dsn := flag.String("dsn", "web:pass@/watchess?parseTime=true", "MariaDB data source name")
 	secret := flag.String("secret", "a3BBA+69e27UvVv&K9P12nasdk@89ue!", "Session encryption key")
+	dev := flag.Bool("dev", false, "Run in dev mode")
 	flag.Parse()
 
 	if (*addr)[0] != ':' {
 		*addr = fmt.Sprintf(":%v", *addr)
 	}
 
-	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-	errorLog := log.New(os.Stderr, "Error\t", log.Ldate|log.Ltime|log.Lshortfile)
+	logger, err := getLogger(dev)
+	if err != nil {
+		log.Fatal("Can't initialize logger")
+	}
+
+	// Direct error produced by http.server through zap
+	undo, err := zap.RedirectStdLogAt(logger, zap.ErrorLevel)
+	if err != nil {
+		logger.Fatal("Can't redirect std logger output through zap")
+	}
+	defer undo()
 
 	db, err := openDB(*dsn)
 	if err != nil {
-		errorLog.Fatal(err)
+		logger.Fatal("Can't open database", zap.Error(err))
 	}
 
 	defer db.Close()
@@ -63,14 +73,13 @@ func main() {
 	tc, err := newTemplateCache("./ui/html")
 
 	if err != nil {
-		errorLog.Fatalf("Couldn't initialize template cache due to error %v\n", err)
+		logger.Fatal("Couldn't initialize template cache", zap.Error(err))
 	}
 
 	session := sessions.New([]byte(*secret))
 
 	app := &application{
-		errorLog:      errorLog,
-		infoLog:       infoLog,
+		logger:        logger,
 		config:        getConfig(),
 		templateCache: tc,
 		tournaments:   &mysql.TournamentModel{DB: db},
@@ -79,9 +88,8 @@ func main() {
 	}
 
 	srv := &http.Server{
-		Addr:     *addr,
-		ErrorLog: errorLog,
-		Handler:  app.routes(),
+		Addr:    *addr,
+		Handler: app.routes(),
 		// Updating ReadTimeout uses the same value for IdleTimeout unless set explicitly
 		IdleTimeout: time.Minute,
 		// Close connection if it takes more than five sec to read header/body
@@ -90,9 +98,9 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 
-	infoLog.Printf("Starting server on %v", *addr)
+	logger.Info("Starting server", zap.String("port", *addr))
 	err = srv.ListenAndServe()
-	errorLog.Fatal(err)
+	logger.Fatal("Failure to initialize server", zap.Error(err))
 }
 
 func openDB(dsn string) (*sql.DB, error) {
@@ -104,4 +112,16 @@ func openDB(dsn string) (*sql.DB, error) {
 		return nil, err
 	}
 	return db, nil
+}
+
+func getLogger(dev *bool) (*zap.Logger, error) {
+	if (dev == nil) || (*dev == false) {
+		logger, err := zap.NewProduction()
+		return logger, err
+	} else {
+ 		config := zap.NewDevelopmentConfig()
+		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		logger, err := config.Build()
+		return logger, err
+	}
 }
