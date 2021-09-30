@@ -72,6 +72,18 @@ func (f *Form) MaxLength(field string, d int) {
 	}
 }
 
+// Check if field has a valid url
+func (f *Form) ValidURL(field string) {
+	value := f.Get(field)
+	if value == "" {
+		return
+	}
+	_, err := url.ParseRequestURI(value)
+	if err != nil {
+		f.Errors.Add(field, fmt.Sprintf("Invalid URL"))
+	}
+}
+
 // Convert field value of the form yyyy-mm-dd to Time reference or report error
 func (f *Form) Date(field string) *time.Time {
 	date, err := time.Parse("2006-01-02", f.Get(field))

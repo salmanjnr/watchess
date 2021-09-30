@@ -5,6 +5,11 @@ import "watchess.org/watchess/pkg/models"
 type config struct {
 	tournament tournamentConfig
 	user       userConfig
+	round      roundConfig
+}
+
+type roundConfig struct {
+	nameMax int
 }
 
 type tournamentConfig struct {
@@ -32,6 +37,9 @@ func getConfig() config {
 			emailMax:    255,
 			passwordMin: 8,
 			validRoles:  models.GetUserRoleStrings(),
+		},
+		round: roundConfig{
+			nameMax: 10,
 		},
 	}
 }

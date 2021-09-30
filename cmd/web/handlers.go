@@ -3,7 +3,10 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 
+	"go.uber.org/zap"
 	"watchess.org/watchess/pkg/forms"
 	"watchess.org/watchess/pkg/models"
 )
@@ -141,7 +144,7 @@ func (app *application) logoutUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) createTournamentForm(w http.ResponseWriter, r *http.Request) {
-	app.render(w, r, "create.page.tmpl", &templateData{})
+	app.render(w, r, "create-tournament.page.tmpl", &templateData{})
 }
 
 func (app *application) createTournament(w http.ResponseWriter, r *http.Request) {
@@ -166,7 +169,98 @@ func (app *application) createTournament(w http.ResponseWriter, r *http.Request)
 
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
 
 	w.Write([]byte(fmt.Sprintf("Tournament created with id %v", id)))
+}
+
+func (app *application) createRoundForm(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
+	if err != nil || id < 1 {
+		app.notFound(w)
+		return
+	}
+
+	tournament, err := app.tournaments.Get(id)
+
+	if err == models.ErrNoRecord {
+		app.notFound(w)
+		return
+	} else if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.render(w, r, "create-round.page.tmpl", &templateData{Tournament: tournament})
+}
+
+func (app *application) createRound(w http.ResponseWriter, r *http.Request) {
+	tournamentId, err := strconv.Atoi(r.URL.Query().Get(":id"))
+	if err != nil || tournamentId < 1 {
+		app.notFound(w)
+		return
+	}
+
+	tournament, err := app.tournaments.Get(tournamentId)
+
+	if err == models.ErrNoRecord {
+		app.notFound(w)
+		return
+	} else if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	err = r.ParseForm()
+	if err != nil {
+		app.serverError(w, err)
+	}
+
+	form := forms.New(r.PostForm)
+	form.Required("name", "pgn-source", "start-date")
+	form.MaxLength("name", app.config.round.nameMax)
+	form.ValidURL("pgn-source")
+	form.Numerical("white-win", "white-draw", "white-loss", "black-win", "black-draw", "black-loss")
+	date := form.Date("start-date")
+
+	app.logger.Debug("Round Creation", zap.String("form", fmt.Sprintf("%v", form)), zap.String("date", date.String()))
+	if !form.Valid() {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	atoiWithDefault := func (str string, defaultValue float32) float32 {
+		str = strings.TrimSpace(str)
+		if str == "" {
+			return defaultValue
+		}
+		nbr, err := strconv.ParseFloat(str, 32)
+		if err != nil {
+			return defaultValue
+		}
+		return float32(nbr)
+	}
+
+	whiteReward := models.GameReward{
+		Win: atoiWithDefault(form.Get("white-win"), 1),
+		Draw: atoiWithDefault(form.Get("white-draw"), 0.5),
+		Loss: atoiWithDefault(form.Get("white-loss"), 0),
+	}
+
+	blackReward := models.GameReward{
+		Win: atoiWithDefault(form.Get("black-win"), 1),
+		Draw: atoiWithDefault(form.Get("black-draw"), 0.5),
+		Loss: atoiWithDefault(form.Get("black-loss"), 0),
+	}
+
+	id, err := app.rounds.Insert(form.Get("name"), form.Get("pgn-source"), whiteReward, blackReward, *date, tournament.ID)
+
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	round, err := app.rounds.Get(id)
+	app.logger.Debug("Round Inserted", zap.Error(err))
+	w.Write([]byte(fmt.Sprintf("%v", round)))
 }

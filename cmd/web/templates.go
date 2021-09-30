@@ -9,6 +9,8 @@ import (
 )
 
 type templateData struct {
+	Rounds            []*models.Round
+	Tournament        *models.Tournament
 	Tournaments       *tournaments
 	CSRFToken         string
 	Form              *forms.Form

@@ -127,14 +127,14 @@ a:hover {
   text-decoration: none;
 }
 
-input[type=text], input[type=password], input[type=email]  {
+input[type=text], input[type=password], input[type=email], input[type=url], input[type=number]  {
 	background-color: #131313;
 	color: #fff;
   	border: none;
   	border-bottom: 2px solid #aaa;
 }
 
-input[type=text]:focus, input[type=password]:focus, input[type=email]:focus {
+input[type=text]:focus, input[type=password]:focus, input[type=email]:focus, input[type=url]:focus, input[type=number]:focus {
 	background-color: #131313;
 	color: #04A290;
   	border: none;
@@ -218,4 +218,10 @@ input[type="date"]:focus {
   color: #fff !important;
   border-radius: 5px !important;
   border: 2px solid #04A290 !important;
+}
+
+#advanced-toggler {
+	background-color: #2E2E2E;
+	color: #fff;
+	width: 100%;
 }

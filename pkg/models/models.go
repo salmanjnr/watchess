@@ -14,6 +14,12 @@ var (
 
 type UserRole uint8
 
+type GameReward struct {
+	Win  float32
+	Draw float32
+	Loss float32
+}
+
 // Wrap roles in a function to prevent mutation
 func GetUserRoleStrings() []string {
 	return []string{"user", "admin"}
@@ -60,4 +66,14 @@ type User struct {
 	HashedPassword []byte
 	Created        time.Time
 	Role           UserRole
+}
+
+type Round struct {
+	ID           int
+	Name         string
+	PGNSource    string
+	WhiteReward  GameReward
+	BlackReward  GameReward
+	StartDate    time.Time
+	TournamentID int
 }

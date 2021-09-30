@@ -37,6 +37,11 @@ type application struct {
 		Authenticate(string, string) (int, error)
 		Get(int) (*models.User, error)
 	}
+	rounds interface {
+		Insert(string, string, models.GameReward, models.GameReward, time.Time, int) (int, error)
+		Get(int) (*models.Round, error)
+		GetByTournament(int) ([]*models.Round, error)
+	}
 	session *sessions.Session
 }
 
@@ -84,6 +89,7 @@ func main() {
 		templateCache: tc,
 		tournaments:   &mysql.TournamentModel{DB: db},
 		users:         &mysql.UserModel{DB: db},
+		rounds:        &mysql.RoundModel{DB: db},
 		session:       session,
 	}
 
@@ -119,7 +125,7 @@ func getLogger(dev *bool) (*zap.Logger, error) {
 		logger, err := zap.NewProduction()
 		return logger, err
 	} else {
- 		config := zap.NewDevelopmentConfig()
+		config := zap.NewDevelopmentConfig()
 		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 		logger, err := config.Build()
 		return logger, err

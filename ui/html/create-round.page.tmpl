@@ -1,0 +1,69 @@
+{{template "base" .}} 
+ 
+{{define "title"}}Create Round - watchess.org{{end}} 
+
+{{define "body"}}
+<div class="container mb-3">
+<form action='' method='POST'>
+	<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+	<div class="form-group row mb-1">
+		<label for="name" class="col-12 col-md-2 col-form-label">Round Name</label>
+		<div class="col-md-10">
+			<input type="text" class="form-control" id="name" name="name" placeholder="Tournament Name" maxLength="10" required>
+		</div>
+	</div>
+	<div class="form-group row mb-1">
+		<label for="pgn-source" class="col-12 col-md-2 col-form-label">PGN Source</label>
+		<div class="col-md-10">
+			<input type="url" class="form-control" id="pgn-source" name="pgn-source" placeholder="PGN Source" required>
+		</div>
+	</div>
+	<div class="form-group row mb-3">
+		<label for="start-date" class="col-12 col-md-2 col-form-label">Start Date</label>
+		<div class="col-12 col-md-3 text-center">
+			<input type="date" class="date-picker form-control" id="start-date" name="start-date" required>
+		</div>
+	</div>
+
+	<a class="btn mb-3" data-bs-toggle="collapse" href="#advanced" id="advanced-toggler">
+		Toggle Advanced Options
+	</a>
+
+	<div class="advanced collapse" id="advanced">
+		<div class="form-group row mb-1">
+			<p>
+			You can change the number of points rewarded for each color independently. This is helpful for tournaments with different rewarding policies and armageddon rounds. Every field that is left blank will fallback to the default value (1 for win, 0.5 for draw, and 0 for loss).
+			</p>
+			<label class="col-12 col-md-2 col-form-label">White Reward</label>
+			<div class="col-4 col-md-3">
+				<!-- We limit the max to 100 because why will you ever need that? -->
+				<input type="number" class="form-control" step="any" id="white-win" name="white-win" min="0" max="100" placeholder="Win">
+			</div>                                                                       
+			<div class="col-4 col-md-3">                                                 
+				<input type="number" class="form-control" id="white-draw" name="white-draw" min="0" max="100" placeholder="Draw">
+			</div>                                                                       
+			<div class="col-4 col-md-3">                                                 
+				<input type="number" class="form-control" id="white-loss" name="white-loss" min="0" max="100" placeholder="Loss">
+			</div>
+		</div>
+		<div class="form-group row mb-1">
+			<label for="pgn-source" class="col-12 col-md-2 col-form-label">Black Reward</label>
+			<div class="col-4 col-md-3">
+				<input type="number" class="form-control" id="black-win" name="black-win" min="0" max="100" placeholder="Win">
+			</div>                                                      
+			<div class="col-4 col-md-3">                                
+				<input type="number" class="form-control" id="black-draw" name="black-draw" min="0" max="100" placeholder="Draw">
+			</div>                                                      
+			<div class="col-4 col-md-3">                                
+				<input type="number" class="form-control" id="black-loss" name="black-loss" min="0" max="100" placeholder="Loss">
+			</div>
+		</div>
+	</div>
+	<div class="form-group row text-center mt-5">
+		<div class="col-12">
+			<button type="submit" class="btn form-btn">Create Round</button>
+		</div>
+	</div>
+</form>
+</div>
+{{end}}
