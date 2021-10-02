@@ -11,6 +11,7 @@ func (app *application) routes() http.Handler {
 	standardMiddleware := alice.New()
 	dynamicMiddleware := alice.New(app.session.Enable, noSurf, app.authenticate)
 	authDynamicMiddleware := dynamicMiddleware.Append(app.requireAdminUser)
+	privilegeMiddleware := authDynamicMiddleware.Append(app.requireTournamentPrivilege)
 
 	mux := pat.New()
 
@@ -19,8 +20,8 @@ func (app *application) routes() http.Handler {
 	mux.Get("/tournaments/create", authDynamicMiddleware.ThenFunc(app.createTournamentForm))
 	mux.Post("/tournaments/create", authDynamicMiddleware.ThenFunc(app.createTournament))
 
-	mux.Get("/tournaments/:id/rounds/create", authDynamicMiddleware.ThenFunc(app.createRoundForm))
-	mux.Post("/tournaments/:id/rounds/create", authDynamicMiddleware.ThenFunc(app.createRound))
+	mux.Get("/tournaments/:id/rounds/create", privilegeMiddleware.ThenFunc(app.createRoundForm))
+	mux.Post("/tournaments/:id/rounds/create", privilegeMiddleware.ThenFunc(app.createRound))
 
 	mux.Get("/user/signup", dynamicMiddleware.ThenFunc(app.signupUserForm))
 	mux.Post("/user/signup", dynamicMiddleware.ThenFunc(app.signupUser))

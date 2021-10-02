@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -165,7 +166,12 @@ func (app *application) createTournament(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	id, err := app.tournaments.Insert(form.Get("name"), form.Get("short-description"), form.Get("long-description"), form.Has("standings"), *startDate, *endDate, false)
+	user := app.authenticatedUser(r)
+	if user == nil {
+		app.serverError(w, errors.New("User is absent from context in a handler that require auth"))
+	}
+
+	id, err := app.tournaments.Insert(form.Get("name"), form.Get("short-description"), form.Get("long-description"), form.Has("standings"), *startDate, *endDate, false, user.ID)
 
 	if err != nil {
 		app.serverError(w, err)

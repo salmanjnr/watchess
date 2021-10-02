@@ -26,7 +26,7 @@ type application struct {
 	config        config
 	templateCache map[string]*template.Template
 	tournaments   interface {
-		Insert(string, string, string, bool, time.Time, time.Time, bool) (int, error)
+		Insert(string, string, string, bool, time.Time, time.Time, bool, int) (int, error)
 		Get(int) (*models.Tournament, error)
 		LatestActive(int) ([]*models.Tournament, error)
 		LatestFinished(int) ([]*models.Tournament, error)

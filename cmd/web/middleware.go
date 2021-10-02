@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/justinas/nosurf"
 	"watchess.org/watchess/pkg/models"
@@ -25,6 +26,35 @@ func (app *application) requireAdminUser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user := app.authenticatedUser(r)
 		if  (user == nil) || (user.Role != models.AdminUser) {
+			app.clientError(w, http.StatusUnauthorized)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// Check if user has privilege to a sprecific tournament
+func (app *application) requireTournamentPrivilege(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		user := app.authenticatedUser(r)
+		if  (user == nil) || (user.Role != models.AdminUser) {
+			app.clientError(w, http.StatusUnauthorized)
+			return
+		}
+
+		tournamentId, err := strconv.Atoi(r.URL.Query().Get(":id"))
+		if err != nil {
+			app.serverError(w, err)
+			return
+		}
+
+		tournament, err := app.tournaments.Get(tournamentId)
+		if err != nil {
+			app.notFound(w)
+			return
+		}
+		
+		if tournament.OwnerID != user.ID {
 			app.clientError(w, http.StatusUnauthorized)
 			return
 		}
