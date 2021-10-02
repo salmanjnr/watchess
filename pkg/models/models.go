@@ -78,3 +78,10 @@ type Round struct {
 	StartDate    time.Time
 	TournamentID int
 }
+
+type Match struct {
+	ID      int
+	Side1   string
+	Side2   string
+	RoundID int
+}

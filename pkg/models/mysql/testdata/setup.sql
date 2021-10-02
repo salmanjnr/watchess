@@ -1,3 +1,5 @@
+-- The setup could be optimized but whatever
+
 CREATE TABLE tournaments (
 	id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	name VARCHAR(100) NOT NULL,
@@ -21,11 +23,43 @@ CREATE TABLE users (
 ALTER TABLE users ADD CONSTRAINT users_uc_email UNIQUE (email);
 ALTER TABLE users ADD CONSTRAINT users_uc_name UNIQUE (name);
 
+CREATE TABLE rounds (
+	id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR(10) NOT NULL,
+	pgn_source TEXT NOT NULL,
+	white_reward_w FLOAT NOT NULL,
+	white_reward_d FLOAT NOT NULL,
+	white_reward_l FLOAT NOT NULL,
+	black_reward_w FLOAT NOT NULL,
+	black_reward_d FLOAT NOT NULL,
+	black_reward_l FLOAT NOT NULL,
+	start_date DATETIME NOT NULL,
+	tournament_id INTEGER NOT NULL,
+	FOREIGN KEY (tournament_id) REFERENCES tournaments(id)
+);
+
+CREATE INDEX idx_round_tournament ON rounds(tournament_id);
+
+CREATE INDEX idx_tournament_start ON tournaments(start_date);
+CREATE INDEX idx_tournament_end ON tournaments(end_date);
+
 ALTER TABLE tournaments ADD COLUMN owner_id INTEGER NOT NULL;
 ALTER TABLE tournaments ADD CONSTRAINT fk_tournament_owner_id FOREIGN KEY (owner_id) REFERENCES users(id);
 
 CREATE INDEX idx_tournament_owner ON tournaments(owner_id);
 
+CREATE TABLE matches (
+	id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	side1 TEXT NOT NULL,
+	side2 TEXT NOT NULL,
+	round_id INTEGER NOT NULL,
+	CONSTRAINT fk_round_id
+	FOREIGN KEY (round_id) REFERENCES rounds(id)
+);
+
+CREATE INDEX idx_match_round ON matches(round_id);
+
+-- users
 
 INSERT INTO users (
 	name, 
@@ -40,6 +74,8 @@ INSERT INTO users (
 	'2000-01-01 00:01:02', 
 	'admin'	
 );
+
+-- tournaments
 
 -- Active
 
@@ -172,4 +208,86 @@ INSERT INTO tournaments (
 	'2324-03-17 10:00:00',
 	0,
 	1
+);
+
+-- rounds
+
+INSERT INTO rounds (
+	name,
+	pgn_source,
+	white_reward_w,
+	white_reward_d,
+	white_reward_l,
+	black_reward_w,
+	black_reward_d,
+	black_reward_l,
+	start_date,
+	tournament_id
+) VALUES (
+	'Round 1',
+	'https://www.something.com',
+	1,
+	0.5,
+	0,
+	1,
+	0.5,
+	0,
+	'2021-10-2 7:00:00',
+	1
+);
+
+INSERT INTO rounds (
+	name,
+	pgn_source,
+	white_reward_w,
+	white_reward_d,
+	white_reward_l,
+	black_reward_w,
+	black_reward_d,
+	black_reward_l,
+	start_date,
+	tournament_id
+) VALUES (
+	'Round 10',
+	'https://www.something.com',
+	2,
+	1,
+	0,
+	2,
+	1,
+	0,
+	'2021-09-1 18:00:00',
+	1
+);
+
+-- matches
+
+INSERT INTO matches (
+	side1, 
+	side2, 
+	round_id
+) VALUES(
+	'Magnus Carlsen',
+	'Ian Nepo',
+	1
+);
+
+INSERT INTO matches (
+	side1, 
+	side2, 
+	round_id
+) VALUES(
+	'Anish Giri',
+	'Levon Aronian',
+	1
+);
+
+INSERT INTO matches (
+	side1, 
+	side2, 
+	round_id
+) VALUES(
+	'Alireza',
+	'Richard',
+	2
 );
