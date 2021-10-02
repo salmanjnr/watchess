@@ -8,7 +8,8 @@ INSERT INTO tournaments (
 	has_standings,
 	start_date,
 	end_date,
-	is_live
+	is_live,
+	owner_id
 ) VALUES (
 	'FIDE Candidates Tournament 2020',
 	'Eight players fight for a chance to play against the current world champion Magnus Carlsen',
@@ -16,6 +17,7 @@ INSERT INTO tournaments (
 	0,
 	'2021-03-07 12:00:00',
 	'2321-03-17 20:00:00',
+	1,
 	1
 );
 
@@ -27,7 +29,8 @@ INSERT INTO tournaments (
 	has_standings,
 	start_date,
 	end_date,
-	is_live
+	is_live,
+	owner_id
 ) VALUES (
 	'Just Another Running Tournament With Max Name Leng',
 	"We couldn't find another running tournament joke. If you have one, please open an issue",
@@ -35,7 +38,8 @@ INSERT INTO tournaments (
 	0,
 	'2021-05-07 12:00:00',
 	'2321-03-17 20:00:00',
-	0
+	0,
+	1
 );
 
 -- Finished
@@ -48,7 +52,8 @@ INSERT INTO tournaments (
 	has_standings,
 	start_date,
 	end_date,
-	is_live
+	is_live,
+	owner_id
 ) VALUES (
 	'Norway Chess 2021',
 	'Watch magnus play against Nepo for the last time before their championship match',
@@ -56,7 +61,8 @@ INSERT INTO tournaments (
 	1,
 	'2021-09-07 17:00:00',
 	'2021-09-17 22:00:00',
-	0
+	0,
+	1
 );
 
 -- 4
@@ -67,7 +73,8 @@ INSERT INTO tournaments (
 	has_standings,
 	start_date,
 	end_date,
-	is_live
+	is_live,
+	owner_id
 ) VALUES (
 	'Super Chess Tournament For Cool Aggressive Players',
 	'Watch the best, coolest, awesomest, magnificentest, toppest whatever do amazingest stuff',
@@ -75,7 +82,8 @@ INSERT INTO tournaments (
 	1,
 	'2021-03-07 11:00:00',
 	'2021-03-17 12:00:00',
-	0
+	0,
+	1
 );
 
 
@@ -89,7 +97,8 @@ INSERT INTO tournaments (
 	has_standings,
 	start_date,
 	end_date,
-	is_live
+	is_live,
+	owner_id
 ) VALUES (
 	'Candidates Far Far Far',
 	'Watch good players (probably) play for a challenge against Magnus (also probably)',
@@ -97,7 +106,8 @@ INSERT INTO tournaments (
 	1,
 	'2321-03-07 7:00:00',
 	'2321-03-17 10:00:00',
-	0
+	0,
+	1
 );
 
 -- 6
@@ -108,7 +118,8 @@ INSERT INTO tournaments (
 	has_standings,
 	start_date,
 	end_date,
-	is_live
+	is_live,
+	owner_id
 ) VALUES (
 	'World Championship Far Far',
 	'Watch Magnus (probably) vs some other person. Might be Alireze, might be Sarin, or even better: it might be me. Note: me here refers to the person that wrote this description which is me. Note: me here refers to me',
@@ -116,5 +127,6 @@ INSERT INTO tournaments (
 	0,
 	'2323-03-07 7:00:00',
 	'2324-03-17 10:00:00',
-	0
+	0,
+	1
 );
