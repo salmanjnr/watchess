@@ -15,6 +15,7 @@ var mockTournament1 = &models.Tournament{
 	StartDate:        time.Date(2021, time.Month(9), 7, 17, 0, 0, 0, time.UTC),
 	EndDate:          time.Date(2021, time.Month(9), 17, 22, 0, 0, 0, time.UTC),
 	IsLive:           false,
+	OwnerID:          1,
 }
 
 var mockTournament2 = &models.Tournament{
@@ -26,6 +27,7 @@ var mockTournament2 = &models.Tournament{
 	StartDate:        time.Date(2031, time.Month(9), 7, 17, 0, 0, 0, time.UTC),
 	EndDate:          time.Date(2031, time.Month(9), 17, 22, 0, 0, 0, time.UTC),
 	IsLive:           false,
+	OwnerID:          1,
 }
 
 var mockTournament3 = &models.Tournament{
@@ -37,11 +39,12 @@ var mockTournament3 = &models.Tournament{
 	StartDate:        time.Date(2021, time.Month(9), 7, 17, 0, 0, 0, time.UTC),
 	EndDate:          time.Date(2031, time.Month(9), 17, 22, 0, 0, 0, time.UTC),
 	IsLive:           true,
+	OwnerID:          1,
 }
 
 type TournamentModel struct{}
 
-func (m *TournamentModel) Insert(name, shortDescription, longDescription string, hasStandings bool, startDate, endDate time.Time, isLive bool) (int, error) {
+func (m *TournamentModel) Insert(name, shortDescription, longDescription string, hasStandings bool, startDate, endDate time.Time, isLive bool, ownerID int) (int, error) {
 	return 1, nil
 }
 

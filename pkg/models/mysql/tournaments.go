@@ -13,12 +13,12 @@ type TournamentModel struct {
 }
 
 // Insert row into tournaments table
-func (m *TournamentModel) Insert(name, shortDescription, longDescription string, hasStandings bool, startDate, endDate time.Time, isLive bool) (int, error) {
+func (m *TournamentModel) Insert(name, shortDescription, longDescription string, hasStandings bool, startDate, endDate time.Time, isLive bool, ownerID int) (int, error) {
 	// Use placeholder instead of string interpolation to avoid SQL injection
 	stmt := `INSERT INTO tournaments (name, short_description, long_description, has_standings,
-	start_date, end_date, is_live) VALUES(?, ?, ?, ?, ?, ?, ?)`
+	start_date, end_date, is_live, owner_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`
 
-	result, err := m.DB.Exec(stmt, name, shortDescription, longDescription, hasStandings, startDate, endDate, isLive)
+	result, err := m.DB.Exec(stmt, name, shortDescription, longDescription, hasStandings, startDate, endDate, isLive, ownerID)
 
 	if err != nil {
 		return 0, err
@@ -35,12 +35,12 @@ func (m *TournamentModel) Insert(name, shortDescription, longDescription string,
 
 func (m *TournamentModel) Get(id int) (*models.Tournament, error) {
 	stmt := `SELECT id, name, short_description, long_description, has_standings, start_date,
-	end_date, is_live FROM tournaments WHERE id = ?`
+	end_date, is_live, owner_id FROM tournaments WHERE id = ?`
 
 	row := m.DB.QueryRow(stmt, id)
 	t := &models.Tournament{}
 
-	err := row.Scan(&t.ID, &t.Name, &t.ShortDescription, &t.LongDescription, &t.HasStandings, &t.StartDate, &t.EndDate, &t.IsLive)
+	err := row.Scan(&t.ID, &t.Name, &t.ShortDescription, &t.LongDescription, &t.HasStandings, &t.StartDate, &t.EndDate, &t.IsLive, &t.OwnerID)
 
 	if err == sql.ErrNoRows {
 		return nil, models.ErrNoRecord
@@ -51,7 +51,7 @@ func (m *TournamentModel) Get(id int) (*models.Tournament, error) {
 }
 
 func (m *TournamentModel) scanTournaments(constraint string) ([]*models.Tournament, error) {
-	stmt := "SELECT id, name, short_description, long_description, has_standings, start_date, end_date, is_live FROM tournaments " + constraint
+	stmt := "SELECT id, name, short_description, long_description, has_standings, start_date, end_date, is_live, owner_id FROM tournaments " + constraint
 
 	rows, err := m.DB.Query(stmt)
 
@@ -65,7 +65,7 @@ func (m *TournamentModel) scanTournaments(constraint string) ([]*models.Tourname
 
 	for rows.Next() {
 		t := &models.Tournament{}
-		err = rows.Scan(&t.ID, &t.Name, &t.ShortDescription, &t.LongDescription, &t.HasStandings, &t.StartDate, &t.EndDate, &t.IsLive)
+		err = rows.Scan(&t.ID, &t.Name, &t.ShortDescription, &t.LongDescription, &t.HasStandings, &t.StartDate, &t.EndDate, &t.IsLive, &t.OwnerID)
 		if err != nil {
 			return nil, err
 		}

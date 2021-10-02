@@ -57,6 +57,7 @@ type Tournament struct {
 	StartDate        time.Time
 	EndDate          time.Time
 	IsLive           bool
+	OwnerID          int
 }
 
 type User struct {

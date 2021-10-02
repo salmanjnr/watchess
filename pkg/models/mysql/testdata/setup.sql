@@ -9,6 +9,37 @@ CREATE TABLE tournaments (
 	end_date DATETIME NOT NULL
 );
 
+CREATE TABLE users ( 
+	id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR(50) NOT NULL,
+	email VARCHAR(255) NOT NULL,
+	hashed_password CHAR(60) NOT NULL,
+	created DATETIME NOT NULL,
+	role ENUM("user", "admin") NOT NULL 
+);
+
+ALTER TABLE users ADD CONSTRAINT users_uc_email UNIQUE (email);
+ALTER TABLE users ADD CONSTRAINT users_uc_name UNIQUE (name);
+
+ALTER TABLE tournaments ADD COLUMN owner_id INTEGER NOT NULL;
+ALTER TABLE tournaments ADD CONSTRAINT fk_tournament_owner_id FOREIGN KEY (owner_id) REFERENCES users(id);
+
+CREATE INDEX idx_tournament_owner ON tournaments(owner_id);
+
+
+INSERT INTO users (
+	name, 
+	email, 
+	hashed_password, 
+	created, 
+	role
+) VALUES(
+	'user', 
+	'user@user.user', 
+	'passpasspasspass', 
+	'2000-01-01 00:01:02', 
+	'admin'	
+);
 
 -- Active
 
@@ -20,7 +51,8 @@ INSERT INTO tournaments (
 	has_standings,
 	start_date,
 	end_date,
-	is_live
+	is_live,
+	owner_id
 ) VALUES (
 	'Happening Now',
 	'Watch now',
@@ -28,6 +60,7 @@ INSERT INTO tournaments (
 	0,
 	'2021-03-07 12:00:00',
 	'2321-03-17 20:00:00',
+	1,
 	1
 );
 
@@ -39,7 +72,8 @@ INSERT INTO tournaments (
 	has_standings,
 	start_date,
 	end_date,
-	is_live
+	is_live,
+	owner_id
 ) VALUES (
 	'Also Now',
 	'Watch now',
@@ -47,6 +81,7 @@ INSERT INTO tournaments (
 	0,
 	'2021-05-07 12:00:00',
 	'2321-03-17 20:00:00',
+	1,
 	1
 );
 
@@ -60,7 +95,8 @@ INSERT INTO tournaments (
 	has_standings,
 	start_date,
 	end_date,
-	is_live
+	is_live,
+	owner_id
 ) VALUES (
 	'Norway Chess',
 	'Watch Magnus',
@@ -68,7 +104,8 @@ INSERT INTO tournaments (
 	1,
 	'2021-09-07 17:00:00',
 	'2021-09-17 22:00:00',
-	0
+	0,
+	1
 );
 
 -- 4
@@ -79,7 +116,8 @@ INSERT INTO tournaments (
 	has_standings,
 	start_date,
 	end_date,
-	is_live
+	is_live,
+	owner_id
 ) VALUES (
 	'Candidates',
 	'Watch good players',
@@ -87,7 +125,8 @@ INSERT INTO tournaments (
 	1,
 	'2021-03-07 11:00:00',
 	'2021-03-17 12:00:00',
-	0
+	0,
+	1
 );
 
 
@@ -101,7 +140,8 @@ INSERT INTO tournaments (
 	has_standings,
 	start_date,
 	end_date,
-	is_live
+	is_live,
+	owner_id
 ) VALUES (
 	'Candidates Far Far Far',
 	'Watch good players probably',
@@ -109,7 +149,8 @@ INSERT INTO tournaments (
 	1,
 	'2321-03-07 7:00:00',
 	'2321-03-17 10:00:00',
-	0
+	0,
+	1
 );
 
 -- 6
@@ -120,7 +161,8 @@ INSERT INTO tournaments (
 	has_standings,
 	start_date,
 	end_date,
-	is_live
+	is_live,
+	owner_id
 ) VALUES (
 	'World Championship Far Far',
 	'Watch Magnus vs someone',
@@ -128,5 +170,6 @@ INSERT INTO tournaments (
 	0,
 	'2323-03-07 7:00:00',
 	'2324-03-17 10:00:00',
-	0
+	0,
+	1
 );

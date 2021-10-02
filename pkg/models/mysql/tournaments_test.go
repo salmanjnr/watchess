@@ -46,6 +46,7 @@ func TestTournamentModelGet(t *testing.T) {
 				StartDate:        time.Date(2021, 9, 7, 17, 0, 0, 0, time.UTC),
 				EndDate:          time.Date(2021, 9, 17, 22, 0, 0, 0, time.UTC),
 				IsLive:           false,
+				OwnerID:          1,
 			},
 			wantError: nil,
 		},
@@ -109,6 +110,7 @@ func TestTournamentModelScan(t *testing.T) {
 					StartDate:        time.Date(2021, 3, 7, 12, 0, 0, 0, time.UTC),
 					EndDate:          time.Date(2321, 3, 17, 20, 0, 0, 0, time.UTC),
 					IsLive:           true,
+					OwnerID:          1,
 				},
 				{
 					ID:               2,
@@ -119,6 +121,7 @@ func TestTournamentModelScan(t *testing.T) {
 					StartDate:        time.Date(2021, 5, 7, 12, 0, 0, 0, time.UTC),
 					EndDate:          time.Date(2321, 3, 17, 20, 0, 0, 0, time.UTC),
 					IsLive:           true,
+					OwnerID:          1,
 				},
 			},
 			wantError: nil,
@@ -138,6 +141,7 @@ func TestTournamentModelScan(t *testing.T) {
 					StartDate:        time.Date(2021, 9, 7, 17, 0, 0, 0, time.UTC),
 					EndDate:          time.Date(2021, 9, 17, 22, 0, 0, 0, time.UTC),
 					IsLive:           false,
+					OwnerID:          1,
 				},
 				{
 					ID:               4,
@@ -148,6 +152,7 @@ func TestTournamentModelScan(t *testing.T) {
 					StartDate:        time.Date(2021, 3, 7, 11, 0, 0, 0, time.UTC),
 					EndDate:          time.Date(2021, 3, 17, 12, 0, 0, 0, time.UTC),
 					IsLive:           false,
+					OwnerID:          1,
 				},
 			},
 			wantError: nil,
@@ -167,6 +172,7 @@ func TestTournamentModelScan(t *testing.T) {
 					StartDate:        time.Date(2321, 3, 7, 7, 0, 0, 0, time.UTC),
 					EndDate:          time.Date(2321, 3, 17, 10, 0, 0, 0, time.UTC),
 					IsLive:           false,
+					OwnerID:          1,
 				},
 				{
 					ID:               6,
@@ -177,6 +183,7 @@ func TestTournamentModelScan(t *testing.T) {
 					StartDate:        time.Date(2323, 3, 7, 7, 0, 0, 0, time.UTC),
 					EndDate:          time.Date(2324, 3, 17, 10, 0, 0, 0, time.UTC),
 					IsLive:           false,
+					OwnerID:          1,
 				},
 			},
 			wantError: nil,
@@ -196,6 +203,7 @@ func TestTournamentModelScan(t *testing.T) {
 					StartDate:        time.Date(2321, 3, 7, 7, 0, 0, 0, time.UTC),
 					EndDate:          time.Date(2321, 3, 17, 10, 0, 0, 0, time.UTC),
 					IsLive:           false,
+					OwnerID:          1,
 				},
 			},
 			wantError: nil,
@@ -243,6 +251,7 @@ func TestTournamentModelInsert(t *testing.T) {
 				StartDate:        time.Date(2021, 9, 7, 17, 0, 0, 0, time.UTC),
 				EndDate:          time.Date(2021, 9, 17, 22, 0, 0, 0, time.UTC),
 				IsLive:           false,
+				OwnerID:          1,
 			},
 			wantError: nil,
 		},
@@ -255,7 +264,7 @@ func TestTournamentModelInsert(t *testing.T) {
 
 			m := TournamentModel{db}
 
-			tournamentID, err := m.Insert(tt.tournament.Name, tt.tournament.ShortDescription, tt.tournament.LongDescription, tt.tournament.HasStandings, tt.tournament.StartDate, tt.tournament.EndDate, tt.tournament.IsLive)
+			tournamentID, err := m.Insert(tt.tournament.Name, tt.tournament.ShortDescription, tt.tournament.LongDescription, tt.tournament.HasStandings, tt.tournament.StartDate, tt.tournament.EndDate, tt.tournament.IsLive, tt.tournament.OwnerID)
 
 			if err != tt.wantError {
 				t.Errorf("want %v; got %s", tt.wantError, err)
