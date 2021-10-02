@@ -221,7 +221,12 @@ func (app *application) createRound(w http.ResponseWriter, r *http.Request) {
 	form.Required("name", "pgn-source", "start-date")
 	form.MaxLength("name", app.config.round.nameMax)
 	form.ValidURL("pgn-source")
-	form.Numerical("white-win", "white-draw", "white-loss", "black-win", "black-draw", "black-loss")
+	rewardFields := []string{"white-win", "white-draw", "white-loss", "black-win", "black-draw", "black-loss"}
+	form.Numerical(rewardFields...)
+	for _, field := range rewardFields {
+		form.MaxValue(field, app.config.round.rewardMax)
+		form.MinValue(field, app.config.round.rewardMin)
+	}
 	date := form.Date("start-date")
 
 	app.logger.Debug("Round Creation", zap.String("form", fmt.Sprintf("%v", form)), zap.String("date", date.String()))

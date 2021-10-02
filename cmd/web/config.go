@@ -9,7 +9,9 @@ type config struct {
 }
 
 type roundConfig struct {
-	nameMax int
+	nameMax   int
+	rewardMax int
+	rewardMin int
 }
 
 type tournamentConfig struct {
@@ -39,7 +41,9 @@ func getConfig() config {
 			validRoles:  models.GetUserRoleStrings(),
 		},
 		round: roundConfig{
-			nameMax: 10,
+			nameMax:   10,
+			rewardMax: 100,
+			rewardMin: 0,
 		},
 	}
 }

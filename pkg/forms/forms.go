@@ -50,6 +50,36 @@ func (f *Form) Numerical(fields ...string) {
 	}
 }
 
+// Check if numerical field violates max value. Ignores non-numerical fields
+func (f *Form) MaxValue(field string, maxVal int) {
+	value := strings.TrimSpace(f.Get(field))
+	if value == "" {
+		return
+	}
+	val, err := strconv.Atoi(value)
+	if err != nil {
+		return
+	}
+	if val > maxVal {
+		f.Errors.Add(field, fmt.Sprintf("This field is too big (maximum is %d)", maxVal))
+	}
+}
+
+// Check if numerical field violates max value. Ignores non-numerical fields
+func (f *Form) MinValue(field string, minVal int) {
+	value := strings.TrimSpace(f.Get(field))
+	if value == "" {
+		return
+	}
+	val, err := strconv.Atoi(value)
+	if err != nil {
+		return
+	}
+	if val < minVal {
+		f.Errors.Add(field, fmt.Sprintf("This field is too small (minimum is %d)", minVal))
+	}
+}
+
 // Check for min length violations and populate form errors field as apt
 func (f *Form) MinLength(field string, d int) {
 	value := f.Get(field)
