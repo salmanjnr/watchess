@@ -17,6 +17,7 @@ migratedown:
 	migrate -path db/migration -database "mysql://$(db-user):$(db-pass)@/watchess" -verbose down
 
 dbseed:
+	mysql -h localhost -u $(db-user) -p$(db-pass) watchess < db/seed/users.sql
 	mysql -h localhost -u $(db-user) -p$(db-pass) watchess < db/seed/tournaments.sql
 
 test:
