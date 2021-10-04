@@ -53,7 +53,7 @@ func (m *RoundModel) GetByTournament(tournamentId int) ([]*models.Round, error) 
 	stmt := `SELECT id, name, pgn_source, white_reward_w, white_reward_d, white_reward_l,
 	black_reward_w, black_reward_d, black_reward_l,
 	start_date, tournament_id FROM rounds WHERE tournament_id = ?`
-	rows, err := m.DB.Query(stmt)
+	rows, err := m.DB.Query(stmt, tournamentId)
 
 	if err != nil {
 		return nil, err
