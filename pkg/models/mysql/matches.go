@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"database/sql"
-	"log"
 
 	"watchess.org/watchess/pkg/models"
 )
@@ -14,7 +13,6 @@ type MatchModel struct {
 func (m *MatchModel) Insert(side1, side2 string, roundID int) (int, error) {
 	stmt := `INSERT INTO matches (side1, side2, round_id) VALUES(?, ?, ?)`
 
-	log.Printf("Round ID: %d\n", roundID)
 	result, err := m.DB.Exec(stmt, side1, side2, roundID)
 
 	if err != nil {
