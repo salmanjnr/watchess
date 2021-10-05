@@ -186,12 +186,12 @@ func TestGameModelGetByRound(t *testing.T) {
 
 	tests := []struct {
 		name      string
-		roundID	int
+		roundID   int
 		wantGames []*models.Game
 		wantError error
 	}{
 		{
-			name: "Valid",
+			name:    "Valid",
 			roundID: 1,
 			wantGames: []*models.Game{
 				{

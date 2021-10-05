@@ -25,7 +25,7 @@ func noSurf(next http.Handler) http.Handler {
 func (app *application) requireAdminUser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user := app.authenticatedUser(r)
-		if  (user == nil) || (user.Role != models.AdminUser) {
+		if (user == nil) || (user.Role != models.AdminUser) {
 			app.clientError(w, http.StatusUnauthorized)
 			return
 		}
@@ -37,7 +37,7 @@ func (app *application) requireAdminUser(next http.Handler) http.Handler {
 func (app *application) requireTournamentPrivilege(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user := app.authenticatedUser(r)
-		if  (user == nil) || (user.Role != models.AdminUser) {
+		if (user == nil) || (user.Role != models.AdminUser) {
 			app.clientError(w, http.StatusUnauthorized)
 			return
 		}
@@ -53,7 +53,7 @@ func (app *application) requireTournamentPrivilege(next http.Handler) http.Handl
 			app.notFound(w)
 			return
 		}
-		
+
 		if tournament.OwnerID != user.ID {
 			app.clientError(w, http.StatusUnauthorized)
 			return
@@ -64,7 +64,7 @@ func (app *application) requireTournamentPrivilege(next http.Handler) http.Handl
 
 // Fetch user information from userID and save them in request context
 func (app *application) authenticate(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		exists := app.session.Exists(r, "userID")
 		if !exists {
 			next.ServeHTTP(w, r)

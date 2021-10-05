@@ -12,7 +12,7 @@ type GameModel struct {
 
 func (m *GameModel) Insert(white, black string, res *models.GameResult, whiteMatchSide, blackMatchSide string, matchID, roundID int) (int, error) {
 	stmt := `INSERT INTO games (white, black, result, white_match_side, black_match_side, match_id, round_id) VALUES (?, ?, ?, ?, ?, ?, ?)`
-	
+
 	var resStr sql.NullString
 
 	if res != nil {
@@ -56,11 +56,11 @@ func (m *GameModel) Get(id int) (*models.Game, error) {
 	} else if err != nil {
 		return nil, err
 	}
-	
+
 	if res.Valid {
 		g.Result, err = models.GetGameResult(res.String)
 		if err != nil {
-			return nil ,err
+			return nil, err
 		}
 	}
 
@@ -100,7 +100,7 @@ func (m *GameModel) GetByMatch(matchID int) ([]*models.Game, error) {
 		if res.Valid {
 			g.Result, err = models.GetGameResult(res.String)
 			if err != nil {
-				return nil ,err
+				return nil, err
 			}
 		}
 
@@ -147,7 +147,7 @@ func (m *GameModel) GetByRound(roundID int) ([]*models.Game, error) {
 		if res.Valid {
 			g.Result, err = models.GetGameResult(res.String)
 			if err != nil {
-				return nil ,err
+				return nil, err
 			}
 		}
 

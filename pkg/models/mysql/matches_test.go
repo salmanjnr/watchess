@@ -13,15 +13,15 @@ func TestMatchesModelInsert(t *testing.T) {
 	}
 
 	tests := []struct {
-		name       string
-		match *models.Match
-		wantError  error
+		name      string
+		match     *models.Match
+		wantError error
 	}{
 		{
 			name: "Valid",
 			match: &models.Match{
-				Side1: "Foo1",
-				Side2: "Foo2",
+				Side1:   "Foo1",
+				Side2:   "Foo2",
 				RoundID: 2,
 			},
 			wantError: nil,
@@ -62,33 +62,33 @@ func TestMatchesModelGet(t *testing.T) {
 	}
 
 	tests := []struct {
-		name           string
+		name      string
 		matchID   int
 		wantMatch *models.Match
-		wantError      error
+		wantError error
 	}{
 		{
-			name:         "Valid ID",
+			name:    "Valid ID",
 			matchID: 3,
 			wantMatch: &models.Match{
-				ID: 3,
-				Side1: "Alireza",
-				Side2: "Richard",
+				ID:      3,
+				Side1:   "Alireza",
+				Side2:   "Richard",
 				RoundID: 2,
 			},
 			wantError: nil,
 		},
 		{
-			name:           "Zero ID",
+			name:      "Zero ID",
 			matchID:   0,
 			wantMatch: nil,
-			wantError:      models.ErrNoRecord,
+			wantError: models.ErrNoRecord,
 		},
 		{
-			name:           "Non-existent ID",
+			name:      "Non-existent ID",
 			matchID:   6927,
 			wantMatch: nil,
-			wantError:      models.ErrNoRecord,
+			wantError: models.ErrNoRecord,
 		},
 	}
 

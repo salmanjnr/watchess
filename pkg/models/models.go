@@ -116,16 +116,16 @@ type Match struct {
 }
 
 type Game struct {
-	ID             int
-	White          string
-	Black          string
-	Result         *GameResult
+	ID     int
+	White  string
+	Black  string
+	Result *GameResult
 	// The side at which white player in Game model will be matched against in Match model
-	// In case of a normal match this will just be player's name 
+	// In case of a normal match this will just be player's name
 	// In case of a team match this will be team name
 	WhiteMatchSide string
 	// The side at which black player in Game model will be matched against in Match model
-	// In case of a normal match this will just be player's name 
+	// In case of a normal match this will just be player's name
 	// In case of a team match this will be team name
 	BlackMatchSide string
 	MatchID        int
