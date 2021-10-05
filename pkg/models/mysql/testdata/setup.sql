@@ -59,6 +59,24 @@ CREATE TABLE matches (
 
 CREATE INDEX idx_match_round ON matches(round_id);
 
+CREATE TABLE games (
+	id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	white TEXT NOT NULL,
+	black TEXT NOT NULL,
+	result ENUM("1-0", "0.5-0.5", "0-1"),
+	white_match_side TEXT NOT NULL,
+	black_match_side TEXT NOT NULL,
+	match_id INTEGER NOT NULL,
+	CONSTRAINT fk_game_match_id
+	FOREIGN KEY (match_id) REFERENCES matches(id),
+	round_id INTEGER NOT NULL,
+	CONSTRAINT fk_game_round_id
+	FOREIGN KEY (round_id) REFERENCES rounds(id)
+);
+
+CREATE INDEX idx_game_match ON games(match_id);
+CREATE INDEX idx_game_round ON games(round_id);
+
 -- users
 
 INSERT INTO users (
@@ -276,7 +294,7 @@ INSERT INTO matches (
 	side1, 
 	side2, 
 	round_id
-) VALUES(
+) VALUES (
 	'Anish Giri',
 	'Levon Aronian',
 	1
@@ -289,5 +307,79 @@ INSERT INTO matches (
 ) VALUES(
 	'Alireza',
 	'Richard',
+	2
+);
+
+-- games
+
+INSERT INTO games (
+	white,
+	black,
+	result,
+	white_match_side,
+	black_match_side,
+	match_id,
+	round_id
+) VALUES (
+	'Magnus Carlsen',
+	'Ian Nepo',
+	'1-0',
+	'Magnus Carlsen',
+	'Ian Nepo',
+	1,
+	1
+);
+
+INSERT INTO games (
+	white,
+	black,
+	result,
+	white_match_side,
+	black_match_side,
+	match_id,
+	round_id
+) VALUES (
+	'Ian Nepo',
+	'Magnus Carlsen',
+	'0.5-0.5',
+	'Ian Nepo',
+	'Magnus Carlsen',
+	1,
+	1
+);
+
+INSERT INTO games (
+	white,
+	black,
+	result,
+	white_match_side,
+	black_match_side,
+	match_id,
+	round_id
+) VALUES (
+	'Magnus Carlsen',
+	'Ian Nepo',
+	'0-1',
+	'Magnus Carlsen',
+	'Ian Nepo',
+	1,
+	1
+);
+
+INSERT INTO games (
+	white,
+	black,
+	result,
+	white_match_side,
+	black_match_side,
+	match_id,
+	round_id
+) VALUES (
+	'Alireza',
+	'Richard',
+	'0-1',
+	'Alireza',
+	'Richard',
+	3,
 	2
 );
