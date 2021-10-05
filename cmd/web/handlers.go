@@ -181,6 +181,35 @@ func (app *application) createTournament(w http.ResponseWriter, r *http.Request)
 	w.Write([]byte(fmt.Sprintf("Tournament created with id %v", id)))
 }
 
+func (app *application) tournamentPage(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
+	if err != nil || id < 1 {
+		app.notFound(w)
+		return
+	}
+	tournament, err := app.tournaments.Get(id)
+
+	if err == models.ErrNoRecord {
+		app.notFound(w)
+		return
+	} else if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	rounds, err := app.rounds.GetByTournament(id)
+
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.render(w, r, "tournament.page.tmpl", &templateData{
+		Tournament: tournament,
+		Rounds:     rounds,
+	})
+}
+
 func (app *application) createRoundForm(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	if err != nil || id < 1 {
@@ -241,7 +270,7 @@ func (app *application) createRound(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	atoiWithDefault := func (str string, defaultValue float32) float32 {
+	atoiWithDefault := func(str string, defaultValue float32) float32 {
 		str = strings.TrimSpace(str)
 		if str == "" {
 			return defaultValue
@@ -254,13 +283,13 @@ func (app *application) createRound(w http.ResponseWriter, r *http.Request) {
 	}
 
 	whiteReward := models.GameReward{
-		Win: atoiWithDefault(form.Get("white-win"), 1),
+		Win:  atoiWithDefault(form.Get("white-win"), 1),
 		Draw: atoiWithDefault(form.Get("white-draw"), 0.5),
 		Loss: atoiWithDefault(form.Get("white-loss"), 0),
 	}
 
 	blackReward := models.GameReward{
-		Win: atoiWithDefault(form.Get("black-win"), 1),
+		Win:  atoiWithDefault(form.Get("black-win"), 1),
 		Draw: atoiWithDefault(form.Get("black-draw"), 0.5),
 		Loss: atoiWithDefault(form.Get("black-loss"), 0),
 	}
