@@ -78,15 +78,15 @@ func (res GameResult) String() string {
 }
 
 type Tournament struct {
-	ID               int
-	Name             string
-	ShortDescription string
-	LongDescription  string
-	HasStandings     bool
-	StartDate        time.Time
-	EndDate          time.Time
-	IsLive           bool
-	OwnerID          int
+	ID               int       `json:"id"`
+	Name             string    `json:"name"`
+	ShortDescription string    `json:"shortDescription"`
+	LongDescription  string    `json:"longDescription"`
+	HasStandings     bool      `json:"hasStandings"`
+	StartDate        time.Time `json:"startDate"`
+	EndDate          time.Time `json:"endDate"`
+	IsLive           bool      `json:"isLive"`
+	OwnerID          int       `json:"-"`
 }
 
 type User struct {
