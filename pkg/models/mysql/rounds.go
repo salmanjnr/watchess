@@ -65,7 +65,7 @@ func (m *RoundModel) GetByTournament(tournamentId int) ([]*models.Round, error) 
 
 	for rows.Next() {
 		r := &models.Round{}
-		err = rows.Scan(&r.ID, &r.Name, &r.PGNSource, &(r.WhiteReward.Win), &(r.WhiteReward.Draw), &(r.WhiteReward.Loss), &(r.BlackReward.Win), &(r.BlackReward.Draw), &(r.BlackReward.Loss), &r.TournamentID)
+		err = rows.Scan(&r.ID, &r.Name, &r.PGNSource, &(r.WhiteReward.Win), &(r.WhiteReward.Draw), &(r.WhiteReward.Loss), &(r.BlackReward.Win), &(r.BlackReward.Draw), &(r.BlackReward.Loss), &r.StartDate, &r.TournamentID)
 		if err != nil {
 			return nil, err
 		}
