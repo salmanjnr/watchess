@@ -55,6 +55,22 @@ INSERT INTO games (
 INSERT INTO games (
 	white,
 	black,
+	white_match_side,
+	black_match_side,
+	match_id,
+	round_id
+) VALUES (
+	'Ian Nepomniachtchi',
+	'Magnus Carlsen',
+	'Ian Nepomniachtchi',
+	'Magnus Carlsen',
+	1,
+	1
+);
+
+INSERT INTO games (
+	white,
+	black,
 	result,
 	white_match_side,
 	black_match_side,
