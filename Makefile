@@ -19,6 +19,9 @@ migratedown:
 dbseed:
 	mysql -h localhost -u $(db-user) -p$(db-pass) watchess < db/seed/users.sql
 	mysql -h localhost -u $(db-user) -p$(db-pass) watchess < db/seed/tournaments.sql
+	mysql -h localhost -u $(db-user) -p$(db-pass) watchess < db/seed/rounds.sql
+	mysql -h localhost -u $(db-user) -p$(db-pass) watchess < db/seed/matches.sql
+	mysql -h localhost -u $(db-user) -p$(db-pass) watchess < db/seed/games.sql
 
 test:
 	go test -v ./...
