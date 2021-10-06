@@ -42,3 +42,38 @@ func (m *MatchModel) Get(id int) (*models.Match, error) {
 	}
 	return c, nil
 }
+
+func (m *MatchModel) GetByRound(roundID int) ([]*models.Match, error) {
+	stmt := `SELECT id, side1, side2, round_id FROM matches WHERE round_id = ?`
+
+	rows, err := m.DB.Query(stmt, roundID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var matches []*models.Match
+
+	for rows.Next() {
+		g := &models.Match{}
+		err = rows.Scan(
+			&g.ID,
+			&g.Side1,
+			&g.Side2,
+			&g.RoundID,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		matches = append(matches, g)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return matches, err
+}
