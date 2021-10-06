@@ -42,6 +42,17 @@ type application struct {
 		Get(int) (*models.Round, error)
 		GetByTournament(int) ([]*models.Round, error)
 	}
+	matches interface {
+		Insert(string, string, int) (int, error)
+		Get(int) (*models.Match, error)
+		GetByRound(int) ([]*models.Match, error)
+	}
+	games interface {
+		Insert(string, string, *models.GameResult, string, string, int, int) (int, error)
+		Get(int) (*models.Game, error)
+		GetByMatch(int) ([]*models.Game, error)
+		GetByRound(int) ([]*models.Game, error)
+	}
 	session *sessions.Session
 }
 
@@ -88,8 +99,10 @@ func main() {
 		config:        getConfig(),
 		templateCache: tc,
 		tournaments:   &mysql.TournamentModel{DB: db},
-		users:         &mysql.UserModel{DB: db},
 		rounds:        &mysql.RoundModel{DB: db},
+		matches:       &mysql.MatchModel{DB: db},
+		games:         &mysql.GameModel{DB: db},
+		users:         &mysql.UserModel{DB: db},
 		session:       session,
 	}
 

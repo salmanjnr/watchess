@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -181,7 +182,7 @@ func (app *application) createTournament(w http.ResponseWriter, r *http.Request)
 	w.Write([]byte(fmt.Sprintf("Tournament created with id %v", id)))
 }
 
-func (app *application) tournamentPage(w http.ResponseWriter, r *http.Request) {
+func (app *application) getTournamentPage(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	if err != nil || id < 1 {
 		app.notFound(w)
@@ -208,6 +209,53 @@ func (app *application) tournamentPage(w http.ResponseWriter, r *http.Request) {
 		Tournament: tournament,
 		Rounds:     rounds,
 	})
+}
+
+func (app *application) getTournamentJSON(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
+	if err != nil || id < 1 {
+		app.notFound(w)
+		return
+	}
+	tournament, err := app.tournaments.Get(id)
+	if err == models.ErrNoRecord {
+		app.notFound(w)
+	} else if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(tournament)
+	if err != nil {
+		app.serverError(w, err)
+	}
+}
+
+func (app *application) getRoundGamesJSON(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
+	if err != nil || id < 1 {
+		app.notFound(w)
+		return
+	}
+
+	round, err := app.rounds.Get(id)
+	if err == models.ErrNoRecord {
+		app.notFound(w)
+	} else if err != nil {
+		app.serverError(w, err)
+	}
+
+	rgames, err := app.newRoundGames(round)
+	if err != nil {
+		app.serverError(w, err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(rgames)
+	if err != nil {
+		app.serverError(w, err)
+	}
 }
 
 func (app *application) createRoundForm(w http.ResponseWriter, r *http.Request) {
