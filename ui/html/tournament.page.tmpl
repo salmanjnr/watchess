@@ -23,89 +23,32 @@
 			</li>
 		</ul>
 	</div>
-	<div class="row tournament-content-body">
-			<div class="col-12 overflow-auto">
-				<div class="tab-content" id="pills-tabContent">
-					<div class="tab-pane fade show active" id="pills-games" role="tabpanel" aria-labelledby="pills-games-tab">
-						<a data-bs-toggle="collapse" href="#match1">
-							<div class="row match-card lose">
-								<div class="col-4 text-start">
-									<div class="text-nowrap overflow-hidden">
-									Magnus Carlsen
-									</div>
-								</div>
-								<div class="col-4 text-center">
-									1 - 2
-								</div>
-								<div class="col-4 text-end">
-									<div class="text-nowrap overflow-hidden">
-									Levon Aronian
-									</div>
-								</div>
-							</div>
-						</a>
-						<div class="row match-games collapse" id="match1">
-							<a>
-								<div class="row game-card white">
-									<div class="col-4 text-start">
-										<div class="text-nowrap overflow-hidden">
-										Magnus Carlsen
-										</div>
-									</div>
-									<div class="col-4 text-center">
-										0 - 1
-									</div>
-									<div class="col-4 text-end">
-										<div class="text-nowrap overflow-hidden">
-										Levon Aronian
-										</div>
-									</div>
-								</div>
-							</a>
-							<a>
-								<div class="row game-card black">
-									<div class="col-4 text-start">
-										<div class="text-nowrap overflow-hidden">
-										Magnus Carlsen
-										</div>
-									</div>
-									<div class="col-4 text-center">
-										 - 
-									</div>
-									<div class="col-4 text-end">
-										<div class="text-nowrap overflow-hidden">
-										Levon Aronian
-										</div>
-									</div>
-								</div>
-							</a>
-							<a>
-								<div class="row game-card white">
-									<div class="col-4 text-start">
-										<div class="text-nowrap overflow-hidden">
-										Magnus Carlsen
-										</div>
-									</div>
-									<div class="col-4 text-center">
-										 - 
-									</div>
-									<div class="col-4 text-end">
-										<div class="text-nowrap overflow-hidden">
-										Levon Aronian
-										</div>
-									</div>
-								</div>
-							</a>
-						</div>
-					</div>
-					{{if .Tournament.HasStandings}}
-					<div class="tab-pane fade" id="pills-standings" role="tabpanel" aria-labelledby="pills-standings-tab"></div>
-					{{end}}
-					<div class="tab-pane fade" id="pills-description" role="tabpanel" aria-labelledby="pills-description-tab">
-						{{.Tournament.LongDescription}}
-					</div>
+	<div class="tab-content" id="pills-tabContent">
+		<div class="tab-pane fade show active" id="pills-games" role="tabpanel" aria-labelledby="pills-games-tab">
+			<div class="row tournament-content-body" id="matchList">
+			</div>
+			<div class="row tournament-control mt-0">
+				<div class="col-4 col-md-2 ms-auto">
+					<select name="round" id="round-select">
+						{{range .Rounds}}
+						<option value="{{.ID}}">{{.Name}}</option>
+						{{end}}
+					</select>
 				</div>
 			</div>
+		</div>
+		{{if .Tournament.HasStandings}}
+		<div class="tab-pane fade" id="pills-standings" role="tabpanel" aria-labelledby="pills-standings-tab">
+			<div class="row tournament-content-body" id="tournamentStandings">
+			</div>
+		</div>
+		{{end}}
+		<div class="tab-pane fade" id="pills-description" role="tabpanel" aria-labelledby="pills-description-tab">
+			<div class="row tournament-content-body" id="tournamentDescription">
+				{{.Tournament.LongDescription}}
+			</div>
+		</div>
 	</div>
 </div>
+<script src="/ui/static/js/tournament/page.js" type="text/javascript"></script>
 {{end}}

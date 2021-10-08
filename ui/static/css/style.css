@@ -259,18 +259,16 @@ input[type="date"]:focus {
 
 .tournament-content-body {
 	max-height: 270px;
+	background-color: #2E2E2E;
+	padding: 15px 10px 15px 10px;
+	border-radius: 5px 5px 5px 5px;
+	overflow-x: auto;
+	overflow-y: auto;
 }
 
-.match-result.win {
-	background-color: #5DBB63;
-}
-
-.match-result.loss {
-	background-color: #F9919A;
-}
-
-.match-result.draw {
-	background-color: #989898;
+#matchList {
+	padding: 15px 10px 5px 10px;
+	border-radius: 5px 5px 0px 0px;
 }
 
 .match-card.win {
@@ -278,7 +276,7 @@ input[type="date"]:focus {
 	border-right: 5px solid #F9919A;
 }
 
-.match-card.lose {
+.match-card.loss {
 	border-left: 5px solid #F9919A;
 	border-right: 5px solid #5DBB63;
 }
@@ -293,7 +291,7 @@ input[type="date"]:focus {
 	padding-right: 0px;
 }
 
-.tournament-title, .tournament-content-body {
+.tournament-title {
 	background-color: #2E2E2E;
 	padding: 15px 10px 15px 10px;
 	border-radius: 5px;
@@ -320,4 +318,29 @@ input[type="date"]:focus {
 	color: #fff;
 	background-color: #04A290;
 	cursor: pointer;
+}
+
+#round-select {
+	appearance: none;
+	text-align: center;
+	width: 100%;
+	padding: 0 0 0 0;
+	margin: 0px;
+	background-color: #131313;
+	color: #04A290;
+  	border: 2px solid #04A290;
+
+  	box-shadow: none;
+	/*border-radius: 5px;*/
+}
+
+#round-select option {
+	background-color: #131313;
+}
+
+.tournament-control {
+	border-radius: 0px 0px 5px 5px;
+	border: 3px solid #2E2E2E;
+	padding: 7px;
+	background-color: #131313;
 }
