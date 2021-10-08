@@ -99,20 +99,20 @@ type User struct {
 }
 
 type Round struct {
-	ID           int
-	Name         string
-	PGNSource    string
-	WhiteReward  GameReward
-	BlackReward  GameReward
-	StartDate    time.Time
-	TournamentID int
+	ID           int        `json:"id"`
+	Name         string     `json:"name"`
+	PGNSource    string     `json:"-"`
+	WhiteReward  GameReward `json:"whiteReward"`
+	BlackReward  GameReward `json:"blackReward"`
+	StartDate    time.Time  `json:"startDate"`
+	TournamentID int        `json:"tournamentID"`
 }
 
 type Match struct {
-	ID      int
-	Side1   string
-	Side2   string
-	RoundID int
+	ID      int    `json:"id"`
+	Side1   string `json:"side1"`
+	Side2   string `json:"side2"`
+	RoundID int    `json:"roundID"`
 }
 
 type Game struct {
