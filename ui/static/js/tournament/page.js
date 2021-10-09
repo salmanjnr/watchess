@@ -1,3 +1,4 @@
+const roundsCache = Object.create({})
 const round = document.getElementById("round-select")
 const matchList = document.getElementById("matchList")
 
@@ -55,7 +56,6 @@ const getMatchResult = function(match) {
 		[match.side2]: 0,
 	}
 	if (match.games) {
-		console.log(match.games)
 		reducer = (acc, game) => {
 			currentResult = getGameResultArr(game.result)
 			acc[game.whiteMatchSide] += currentResult[0]
@@ -73,23 +73,25 @@ const matchHTML = function(match) {
 	gamesDivID = getGamesDivID(match.id)
 	matchResult = getMatchResult(match)
 	matchResultClass = getMatchResultClass(matchResult, match.side1, match.side2)
-	return `<a data-bs-toggle="collapse" href="#${gamesDivID}">
-				<div class="row match-card ${matchResultClass}">
-					<div class="col-4 text-start">
-						<div class="text-nowrap overflow-hidden">
-						${match.side1}
-						</div>
-					</div>
-					<div class="col-4 text-center">
-						${matchResult[match.side1]} - ${matchResult[match.side2]}
-					</div>
-					<div class="col-4 text-end">
-						<div class="text-nowrap overflow-hidden">
-						${match.side2}
-						</div>
+	return `
+		<a data-bs-toggle="collapse" href="#${gamesDivID}">
+			<div class="row match-card ${matchResultClass}">
+				<div class="col-4 text-start">
+					<div class="text-nowrap overflow-hidden">
+					${match.side1}
 					</div>
 				</div>
-			</a>`
+				<div class="col-4 text-center">
+					${matchResult[match.side1]} - ${matchResult[match.side2]}
+				</div>
+				<div class="col-4 text-end">
+					<div class="text-nowrap overflow-hidden">
+					${match.side2}
+					</div>
+				</div>
+			</div>
+		</a>
+		`
 }
 
 const gamesHTML = function(match) {
@@ -130,9 +132,13 @@ const gamesHTML = function(match) {
 }
 
 const getRound = async function(roundID){
+	if (roundID in roundsCache) {
+		return roundsCache[roundID]
+	}
 	const res = await fetch(gamesEndpoint(roundID))
 	if (res.ok) {
 		const games = await res.json()
+		roundsCache[roundID] = games
 		return games
 	}
 	return []
