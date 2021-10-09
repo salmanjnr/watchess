@@ -16,9 +16,9 @@ type UserRole uint8
 type GameResult uint8
 
 type GameReward struct {
-	Win  float32  `json:"win"`
-	Draw float32  `json:"draw"`
-	Loss float32  `json:"loss"`
+	Win  float32 `json:"win"`
+	Draw float32 `json:"draw"`
+	Loss float32 `json:"loss"`
 }
 
 // Wrap roles in a function to prevent mutation
@@ -128,6 +128,7 @@ type Game struct {
 	// In case of a normal match this will just be player's name
 	// In case of a team match this will be team name
 	BlackMatchSide string `json:"blackMatchSide"`
+	PGN            string `json:"pgn"`
 	MatchID        int    `json:"matchID"`
 	RoundID        int    `json:"roundID"`
 }

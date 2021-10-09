@@ -10,8 +10,8 @@ type GameModel struct {
 	DB *sql.DB
 }
 
-func (m *GameModel) Insert(white, black string, res *models.GameResult, whiteMatchSide, blackMatchSide string, matchID, roundID int) (int, error) {
-	stmt := `INSERT INTO games (white, black, result, white_match_side, black_match_side, match_id, round_id) VALUES (?, ?, ?, ?, ?, ?, ?)`
+func (m *GameModel) Insert(white, black string, res *models.GameResult, whiteMatchSide, blackMatchSide, pgn string, matchID, roundID int) (int, error) {
+	stmt := `INSERT INTO games (white, black, result, white_match_side, black_match_side, pgn, match_id, round_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
 
 	var resStr sql.NullString
 
@@ -21,7 +21,7 @@ func (m *GameModel) Insert(white, black string, res *models.GameResult, whiteMat
 		resStr = sql.NullString{}
 	}
 
-	result, err := m.DB.Exec(stmt, white, black, resStr, whiteMatchSide, blackMatchSide, matchID, roundID)
+	result, err := m.DB.Exec(stmt, white, black, resStr, whiteMatchSide, blackMatchSide, pgn, matchID, roundID)
 
 	if err != nil {
 		return 0, err
@@ -35,7 +35,7 @@ func (m *GameModel) Insert(white, black string, res *models.GameResult, whiteMat
 }
 
 func (m *GameModel) Get(id int) (*models.Game, error) {
-	stmt := `SELECT id, white, black, result, white_match_side, black_match_side, match_id, round_id FROM games WHERE id = ?`
+	stmt := `SELECT id, white, black, result, white_match_side, black_match_side, pgn, match_id, round_id FROM games WHERE id = ?`
 
 	row := m.DB.QueryRow(stmt, id)
 	g := &models.Game{}
@@ -47,6 +47,7 @@ func (m *GameModel) Get(id int) (*models.Game, error) {
 		&res,
 		&g.WhiteMatchSide,
 		&g.BlackMatchSide,
+		&g.PGN,
 		&g.MatchID,
 		&g.RoundID,
 	)
@@ -68,7 +69,7 @@ func (m *GameModel) Get(id int) (*models.Game, error) {
 }
 
 func (m *GameModel) GetByMatch(matchID int) ([]*models.Game, error) {
-	stmt := `SELECT id, white, black, result, white_match_side, black_match_side, match_id, round_id FROM games WHERE match_id = ?`
+	stmt := `SELECT id, white, black, result, white_match_side, black_match_side, pgn, match_id, round_id FROM games WHERE match_id = ?`
 
 	rows, err := m.DB.Query(stmt, matchID)
 
@@ -90,6 +91,7 @@ func (m *GameModel) GetByMatch(matchID int) ([]*models.Game, error) {
 			&res,
 			&g.WhiteMatchSide,
 			&g.BlackMatchSide,
+			&g.PGN,
 			&g.MatchID,
 			&g.RoundID,
 		)
@@ -115,7 +117,7 @@ func (m *GameModel) GetByMatch(matchID int) ([]*models.Game, error) {
 }
 
 func (m *GameModel) GetByRound(roundID int) ([]*models.Game, error) {
-	stmt := `SELECT id, white, black, result, white_match_side, black_match_side, match_id, round_id FROM games WHERE round_id = ?`
+	stmt := `SELECT id, white, black, result, white_match_side, black_match_side, pgn, match_id, round_id FROM games WHERE round_id = ?`
 
 	rows, err := m.DB.Query(stmt, roundID)
 
@@ -137,6 +139,7 @@ func (m *GameModel) GetByRound(roundID int) ([]*models.Game, error) {
 			&res,
 			&g.WhiteMatchSide,
 			&g.BlackMatchSide,
+			&g.PGN,
 			&g.MatchID,
 			&g.RoundID,
 		)

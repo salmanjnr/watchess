@@ -77,6 +77,8 @@ CREATE TABLE games (
 CREATE INDEX idx_game_match ON games(match_id);
 CREATE INDEX idx_game_round ON games(round_id);
 
+ALTER TABLE games ADD COLUMN pgn TEXT NOT NULL;
+
 -- users
 
 INSERT INTO users (
@@ -318,6 +320,7 @@ INSERT INTO games (
 	result,
 	white_match_side,
 	black_match_side,
+    pgn,
 	match_id,
 	round_id
 ) VALUES (
@@ -326,6 +329,7 @@ INSERT INTO games (
 	'1-0',
 	'Magnus Carlsen',
 	'Ian Nepo',
+	'Test',
 	1,
 	1
 );
@@ -336,6 +340,7 @@ INSERT INTO games (
 	result,
 	white_match_side,
 	black_match_side,
+    pgn,
 	match_id,
 	round_id
 ) VALUES (
@@ -344,6 +349,7 @@ INSERT INTO games (
 	'0.5-0.5',
 	'Ian Nepo',
 	'Magnus Carlsen',
+	'Test',
 	1,
 	1
 );
@@ -354,6 +360,7 @@ INSERT INTO games (
 	result,
 	white_match_side,
 	black_match_side,
+    pgn,
 	match_id,
 	round_id
 ) VALUES (
@@ -362,6 +369,7 @@ INSERT INTO games (
 	'0-1',
 	'Magnus Carlsen',
 	'Ian Nepo',
+	'Test',
 	1,
 	1
 );
@@ -372,6 +380,7 @@ INSERT INTO games (
 	result,
 	white_match_side,
 	black_match_side,
+    pgn,
 	match_id,
 	round_id
 ) VALUES (
@@ -380,6 +389,7 @@ INSERT INTO games (
 	'0-1',
 	'Alireza',
 	'Richard',
+	'Test',
 	3,
 	2
 );

@@ -48,7 +48,7 @@ type application struct {
 		GetByRound(int) ([]*models.Match, error)
 	}
 	games interface {
-		Insert(string, string, *models.GameResult, string, string, int, int) (int, error)
+		Insert(string, string, *models.GameResult, string, string, string, int, int) (int, error)
 		Get(int) (*models.Game, error)
 		GetByMatch(int) ([]*models.Game, error)
 		GetByRound(int) ([]*models.Game, error)

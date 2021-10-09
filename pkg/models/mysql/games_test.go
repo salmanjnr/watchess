@@ -45,6 +45,7 @@ func TestGameModelInsert(t *testing.T) {
 				Result:         getGameResult("1-0"),
 				WhiteMatchSide: "Foo1",
 				BlackMatchSide: "Foo2",
+				PGN:            "Test",
 				MatchID:        1,
 				RoundID:        1,
 			},
@@ -58,6 +59,7 @@ func TestGameModelInsert(t *testing.T) {
 				Result:         getGameResult("0.5-0.5"),
 				WhiteMatchSide: "Foo1",
 				BlackMatchSide: "Foo2",
+				PGN:            "Test",
 				MatchID:        1,
 				RoundID:        1,
 			},
@@ -71,6 +73,7 @@ func TestGameModelInsert(t *testing.T) {
 				Result:         getGameResult("0-1"),
 				WhiteMatchSide: "Foo1",
 				BlackMatchSide: "Foo2",
+				PGN:            "Test",
 				MatchID:        1,
 				RoundID:        1,
 			},
@@ -84,6 +87,7 @@ func TestGameModelInsert(t *testing.T) {
 				Result:         nil,
 				WhiteMatchSide: "Foo1",
 				BlackMatchSide: "Foo2",
+				PGN:            "Test",
 				MatchID:        1,
 				RoundID:        1,
 			},
@@ -98,7 +102,7 @@ func TestGameModelInsert(t *testing.T) {
 
 			m := GameModel{db}
 
-			gameID, err := m.Insert(tt.game.White, tt.game.Black, tt.game.Result, tt.game.WhiteMatchSide, tt.game.BlackMatchSide, tt.game.MatchID, tt.game.RoundID)
+			gameID, err := m.Insert(tt.game.White, tt.game.Black, tt.game.Result, tt.game.WhiteMatchSide, tt.game.BlackMatchSide, tt.game.PGN, tt.game.MatchID, tt.game.RoundID)
 
 			if err != tt.wantError {
 				t.Errorf("want %v; got %s", tt.wantError, err)
@@ -140,6 +144,7 @@ func TestGameModelGet(t *testing.T) {
 				Result:         getGameResult("0-1"),
 				WhiteMatchSide: "Alireza",
 				BlackMatchSide: "Richard",
+				PGN:            "Test",
 				MatchID:        3,
 				RoundID:        2,
 			},
@@ -201,6 +206,7 @@ func TestGameModelGetByRound(t *testing.T) {
 					Result:         getGameResult("1-0"),
 					WhiteMatchSide: "Magnus Carlsen",
 					BlackMatchSide: "Ian Nepo",
+					PGN:            "Test",
 					MatchID:        1,
 					RoundID:        1,
 				},
@@ -211,6 +217,7 @@ func TestGameModelGetByRound(t *testing.T) {
 					Result:         getGameResult("0.5-0.5"),
 					WhiteMatchSide: "Ian Nepo",
 					BlackMatchSide: "Magnus Carlsen",
+					PGN:            "Test",
 					MatchID:        1,
 					RoundID:        1,
 				},
@@ -221,6 +228,7 @@ func TestGameModelGetByRound(t *testing.T) {
 					Result:         getGameResult("0-1"),
 					WhiteMatchSide: "Magnus Carlsen",
 					BlackMatchSide: "Ian Nepo",
+					PGN:            "Test",
 					MatchID:        1,
 					RoundID:        1,
 				},
