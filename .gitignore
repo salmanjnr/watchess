@@ -1,3 +1,4 @@
 ui/node_modules/*
+ui/package-lock.json
 ui/static/js/*
 bin/
