@@ -37,7 +37,7 @@ func (app *application) routes() http.Handler {
 	mux.Get("/ping", http.HandlerFunc(ping))
 
 	fileServer := http.FileServer(http.Dir("./ui/"))
-	mux.Get("/ui/", http.StripPrefix("/ui", fileServer))
-
+	mux.Get("/ui/static/css/", http.StripPrefix("/ui", fileServer))
+	mux.Get("/ui/static/js/", http.StripPrefix("/ui", fileServer))
 	return standardMiddleware.Then(mux)
 }
