@@ -1,9 +1,8 @@
-const applyValidation = function (fields, ...args) {
-	return function (_) {
-		res = "";
-		for (i in args) {
-			v = args[i]();
-			console.log(v);
+const applyValidation = function (fields: HTMLInputElement[], ...args: ((e: Event) => string)[]) {
+	return function (e: Event) {
+		var res = "";
+		for (var i in args) {
+			var v = args[i](e);
 			if (v != "") {
 				res = v;
 				break;
@@ -15,8 +14,8 @@ const applyValidation = function (fields, ...args) {
 	}
 }
 
-const validateEmail = function (field) {
-	return function () {
+const validateEmail = function (field: HTMLInputElement) {
+	return function (_: Event) {
 		if (field.validity.typeMismatch) {
 			return "Invalid email address";
 		} else {
@@ -25,8 +24,8 @@ const validateEmail = function (field) {
 	}
 }
 
-const validateMatchingPair = function (field1, field2) {
-	return function (_) {
+const validateMatchingPair = function (field1: HTMLInputElement, field2: HTMLInputElement) {
+	return function (_: Event) {
 		if (field1.value == field2.value) {
 			return "";
 		} else {
@@ -35,8 +34,8 @@ const validateMatchingPair = function (field1, field2) {
 	}
 }
 
-const validateMinLength = function (field, minLength) {
-	return function () {
+const validateMinLength = function (field: HTMLInputElement, minLength: number) {
+	return function (_: Event) {
 		if (field.value.length < minLength) {
 			return `This field is too short (minimum is ${minLength})`;
 		} else {
@@ -45,9 +44,9 @@ const validateMinLength = function (field, minLength) {
 	}
 }
 
-const email = document.getElementById("email");
-const pass = document.getElementById("password");
-const passConfirmation = document.getElementById("confirm-password");
+const email = <HTMLInputElement>document.getElementById("email");
+const pass = <HTMLInputElement>document.getElementById("password");
+const passConfirmation = <HTMLInputElement>document.getElementById("confirm-password");
 
 email.addEventListener("input", applyValidation([email], validateEmail(email)));
 pass.addEventListener("input", applyValidation(

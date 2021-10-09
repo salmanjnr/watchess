@@ -1,7 +1,7 @@
-const endDate = document.getElementById("end-date");
-const startDate = document.getElementById("start-date");
+const endDate = <HTMLInputElement>document.getElementById("end-date");
+const startDate = <HTMLInputElement>document.getElementById("start-date");
 
-const isValidDatePair = function (start, end) {
+const isValidDatePair = function (start: string, end: string): boolean {
 	const startTime = Date.parse(start);
 	const endTime = Date.parse(end);
 	if (isNaN(startTime) || isNaN(endTime)) {
@@ -13,8 +13,8 @@ const isValidDatePair = function (start, end) {
 	}
 }
 
-const validateDatePair = function (start, end) {
-	return function (_) {
+const validateDatePair = function (start: HTMLInputElement, end: HTMLInputElement) {
+	return function (_: Event) {
 		if (isValidDatePair(start.value, end.value)) {
 			start.setCustomValidity("");
 			end.setCustomValidity("");

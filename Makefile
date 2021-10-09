@@ -5,6 +5,7 @@ build:
 	find cmd/web/ -name '*.go' -not -path '*_test.go' | xargs go build -o bin/server
 
 run:
+	npm run gulp --prefix ui/
 	find cmd/web/ -name '*.go' -not -path '*_test.go' | xargs go run
 
 format:

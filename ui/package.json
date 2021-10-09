@@ -7,5 +7,12 @@
     "watchess"
   ],
   "author": "Ahmed Abdelaziz",
-  "license": "ISC"
+  "license": "ISC",
+  "scripts": {
+    "gulp": "gulp"
+  },
+  "dependencies": {
+    "gulp": "^4.0.2",
+    "gulp-typescript": "^6.0.0-alpha.1"
+  }
 }
