@@ -26,12 +26,12 @@ type tournaments struct {
 
 type roundGames struct {
 	models.Round
-	Matches      []matchGames      `json:"matches"`
+	Matches []matchGames `json:"matches"`
 }
 
 type matchGames struct {
 	models.Match
-	Games   []models.Game `json:"games"`
+	Games []models.Game `json:"games"`
 }
 
 func (app *application) newRoundGames(round *models.Round) (*roundGames, error) {
@@ -45,7 +45,7 @@ func (app *application) newRoundGames(round *models.Round) (*roundGames, error) 
 		return nil, err
 	}
 
-	// Instead of iterating over matches and getting games by match, we 
+	// Instead of iterating over matches and getting games by match, we
 	// get all round games and store them in a map with match id as key
 	gs, err := app.games.GetByRound(round.ID)
 	if err != nil {
@@ -64,7 +64,7 @@ func (app *application) newRoundGames(round *models.Round) (*roundGames, error) 
 
 	for _, match := range ms {
 		var curGames []models.Game
-		if games, ok := matchesMap[match.ID]; ok{
+		if games, ok := matchesMap[match.ID]; ok {
 			curGames = *games
 		}
 
@@ -75,7 +75,7 @@ func (app *application) newRoundGames(round *models.Round) (*roundGames, error) 
 	}
 
 	rgames := roundGames{
-		Round: *round,
+		Round:   *round,
 		Matches: matches,
 	}
 	return &rgames, nil
