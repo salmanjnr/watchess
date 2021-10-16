@@ -1,5 +1,10 @@
 package broadcast
 
+import (
+	"errors"
+	"fmt"
+)
+
 type updateBroker struct {
 	updates        chan GameUpdate
 	clients        map[Client]bool
@@ -47,7 +52,12 @@ func (b *updateBroker) sendUpdate(update GameUpdate) {
 	}
 }
 
-func (b *updateBroker) run() {
+func (b *updateBroker) run(errorChan chan <- error) {
+	defer func() {
+		if r := recover(); r != nil {
+			errorChan <- errors.New(fmt.Sprint(r))
+		}
+	}()
 	for {
 		select {
 		case client := <-b.registerChan:

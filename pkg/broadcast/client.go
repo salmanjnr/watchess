@@ -29,7 +29,6 @@ func (c *GameClient) Updates() chan<- GameUpdate {
 // Close client
 func (c *GameClient) Close() {
 	close(c.updates)
-	c.done <- struct{}{}
 }
 
 func (c *RoundClient) Updates() chan<- GameUpdate {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/notnil/chess"
+	"github.com/salman69e27/chess"
 )
 
 // All communication is done in terms of GameUpdate
@@ -42,7 +42,7 @@ func (g *safeGBrokerMap) value(gameID int) (*gameBroker, error) {
 	if v, ok := g.v[gameID]; ok {
 		return v, nil
 	}
-	return nil, fmt.Errorf("Game center with ID %v not present", gameID)
+	return nil, fmt.Errorf("Broker with for game with ID %v not present", gameID)
 }
 
 func (g *safeGBrokerMap) create(gameID int, gc *gameBroker) error {
