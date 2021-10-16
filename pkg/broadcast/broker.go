@@ -52,7 +52,7 @@ func (b *updateBroker) sendUpdate(update GameUpdate) {
 	}
 }
 
-func (b *updateBroker) run(errorChan chan <- error) {
+func (b *updateBroker) run(errorChan chan<- error) {
 	defer func() {
 		if r := recover(); r != nil {
 			errorChan <- errors.New(fmt.Sprint(r))

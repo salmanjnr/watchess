@@ -11,8 +11,8 @@ import (
 func TestRoundRun(t *testing.T) {
 	defer goleak.VerifyNone(t)
 	tests := []struct {
-		name string
-		pgnDir string
+		name     string
+		pgnDir   string
 		wantMsgs []string
 	}{
 		{
@@ -76,7 +76,7 @@ func TestRoundRun(t *testing.T) {
 					break
 				}
 				select {
-				case update, ok := <- logChan:
+				case update, ok := <-logChan:
 					if !ok {
 						logChan = nil
 						break
@@ -100,7 +100,7 @@ func TestRoundRun(t *testing.T) {
 				case <-timeout.C:
 					t.Error("Timedout before receiving wanted messages")
 				}
-				}
-		})	
+			}
+		})
 	}
 }

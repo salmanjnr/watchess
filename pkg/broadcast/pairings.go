@@ -18,9 +18,8 @@ type pairing struct {
 	Value pairingValue `hash:"set"`
 }
 
-
 func newPairing(side1, side2 string) pairing {
-	return pairing {
+	return pairing{
 		Value: pairingValue([]string{side1, side2}),
 	}
 }
@@ -41,7 +40,7 @@ func (p pairing) getSides() []string {
 func (p pairing) getPlayerSideMap() map[string]string {
 	// Currently pairings are based on white and black tags, and are identical to game sides
 	s := p.getSides()
-	return map[string]string {
+	return map[string]string{
 		s[0]: s[0],
 		s[1]: s[1],
 	}
@@ -49,7 +48,7 @@ func (p pairing) getPlayerSideMap() map[string]string {
 
 // Map from pairing to id
 type safePairingMap struct {
-	v map[pairingHash]int
+	v  map[pairingHash]int
 	mu sync.Mutex
 }
 

@@ -45,15 +45,15 @@ func (ts *testPGNServer) fetch() (io.Reader, error) {
 	return bytes.NewReader(body), nil
 }
 
-func pgnHandlerFactory(pgns []string) func(w http.ResponseWriter, r *http.Request){
+func pgnHandlerFactory(pgns []string) func(w http.ResponseWriter, r *http.Request) {
 	timeCreated := time.Now()
 	sort.Strings(pgns)
 	return func(w http.ResponseWriter, r *http.Request) {
-		diff := int(time.Now().Sub(timeCreated).Milliseconds()/50)
+		diff := int(time.Now().Sub(timeCreated).Milliseconds() / 50)
 		if diff >= len(pgns) {
 			diff = len(pgns) - 1
 		}
-		
+
 		content, err := ioutil.ReadFile(pgns[diff])
 		if err != nil {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

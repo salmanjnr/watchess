@@ -52,11 +52,11 @@ type Round struct {
 	// All registered game brokers in the round. This is used for registering new clients instead of searching for the game id in Round.gms
 	gBrokerMap safeGBrokerMap
 	// Games ordered by their number in the pgn file
-	gms         []*game
-	matchModel  interface {
+	gms        []*game
+	matchModel interface {
 		Insert(string, string, int) (int, error)
 	}
-	gameModel   interface {
+	gameModel interface {
 		Insert(string, string, *models.GameResult, string, string, string, int, int) (int, error)
 	}
 	roundBroker *roundBroker
@@ -212,7 +212,7 @@ func (r *Round) handleUpdate(gameIndex int, currentGame *game, newGm *chess.Game
 	res := newGm.GetTagPair("Result")
 
 	// Make sure result tag is valid
-	if res.Value != "*" && res.Value != "1-0" && res.Value != "0-1" && res.Value != "1/2-1/2"{
+	if res.Value != "*" && res.Value != "1-0" && res.Value != "0-1" && res.Value != "1/2-1/2" {
 		return fmt.Errorf("Result value %s invalid for game %v", res.Value, gameIndex)
 	}
 
