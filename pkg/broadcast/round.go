@@ -243,7 +243,7 @@ func (r *Round) handleUpdate(gameIndex int, currentGame *game, newGm *chess.Game
 		return fmt.Errorf("Result value %s invalid for game %v", res.Value, gameIndex)
 	}
 
-	pgnString := newGm.String()
+	pgnString := encodePGNWithComments(newGm)
 	fen := newGm.FEN()
 	if res.Value != "*" {
 		// if game finished, send result and remove game broker
