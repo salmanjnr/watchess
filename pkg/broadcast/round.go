@@ -3,6 +3,7 @@ package broadcast
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -43,6 +44,7 @@ func (f pgnFetcher) fetch() (io.Reader, error) {
 
 type Round struct {
 	roundID int
+	isRunning bool
 	// Maximum time without updates in pgn source before the round closes itself
 	idleTimeout time.Duration
 	// The interval between each two successive updates
@@ -82,7 +84,7 @@ func NewRound(roundID int, idleTimeout, updateInterval time.Duration, pgnSource 
 		roundBroker:    &roundBroker{newBroker()},
 		pairingMap:     newPairingMap(),
 		errorChan:      make(chan error),
-		LogChan:        make(chan interface{}),
+		LogChan:        make(chan interface{}, 100),
 		Done:           make(chan struct{}),
 	}
 
@@ -156,7 +158,11 @@ func (r *Round) createGame(gm *chess.Game) (matchCreated bool, gameCreated bool,
 }
 
 // Creates a client for a game in the round. If game doesn't exist in game brokers map (which either means the game is finished or never existed), an error is returned
-func (r *Round) createGameClient(gameID int) (*GameClient, error) {
+func (r *Round) CreateGameClient(gameID int) (*GameClient, error) {
+	if !r.isRunning {
+		return nil, errors.New("Round is not running")
+	}
+
 	gc, err := r.gBrokerMap.value(gameID)
 	if err != nil {
 		return nil, err
@@ -165,9 +171,29 @@ func (r *Round) createGameClient(gameID int) (*GameClient, error) {
 	c := &GameClient{
 		broker:  gc,
 		updates: make(chan GameUpdate),
+		done: make(chan struct{}),
 	}
 
 	gc.registerChan <- c
+	return c, nil
+}
+
+// Creates a client for a round broker. If round broker not initialized of round is finished, an error is returned.
+func (r *Round) CreateRoundClient() (*RoundClient, error) {
+	if !r.isRunning {
+		return nil, errors.New("Round is not running")
+	}
+	if r.roundBroker == nil {
+		return nil, errors.New("Round broker is not initialized")
+	}
+
+	c := &RoundClient{
+		broker:  r.roundBroker,
+		updates: make(chan GameUpdate),
+		done: make(chan struct{}),
+	}
+
+	r.roundBroker.registerChan <- c
 	return c, nil
 }
 
@@ -175,6 +201,7 @@ func (r *Round) createGameClient(gameID int) (*GameClient, error) {
 // An error is returned if one happened during parsing, including if a necessary game tag is not present
 // Necessary tags: White, Black, Result
 func (r *Round) Init() error {
+	r.isRunning = true
 	go r.roundBroker.run(r.errorChan)
 	pgnReader, err := r.pgnFetcher.fetch()
 	if err != nil {
@@ -246,6 +273,7 @@ func (r *Round) Close() {
 	// We can't close the error channel because brokers might be using it, so we just block them
 	// and they will close with the termination signal
 	r.errorChan = nil
+	r.isRunning = false
 }
 
 func (r *Round) Run() {
