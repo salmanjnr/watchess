@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
-	"math/rand"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -15,16 +14,26 @@ import (
 	"watchess.org/watchess/pkg/models"
 )
 
-type fakeGameModel struct{}
-
-func (m fakeGameModel) Insert(a, b string, c *models.GameResult, d, e, f string, g, h int) (int, error) {
-	return rand.Int(), nil
+type fakeGameModel struct{
+	gameID int
 }
 
-type fakeMatchModel struct{}
+func (m *fakeGameModel) Insert(a, b string, c *models.GameResult, d, e, f string, g, h int) (int, error) {
+	defer func() {
+		m.gameID += 1
+	}()
+	return m.gameID, nil
+}
 
-func (m fakeMatchModel) Insert(a, b string, c int) (int, error) {
-	return rand.Int(), nil
+type fakeMatchModel struct{
+	matchID int
+}
+
+func (m *fakeMatchModel) Insert(a, b string, c int) (int, error) {
+	defer func() {
+		m.matchID += 1
+	}()
+	return m.matchID, nil
 }
 
 type testPGNServer struct {
@@ -81,12 +90,12 @@ func newTestRound(ts *testPGNServer) *Round {
 		pgnFetcher:     ts,
 		gBrokerMap:     newGBrokerMap(),
 		gms:            []*game{},
-		matchModel:     fakeMatchModel{},
-		gameModel:      fakeGameModel{},
+		matchModel:     &fakeMatchModel{},
+		gameModel:      &fakeGameModel{},
 		roundBroker:    &roundBroker{newBroker()},
 		pairingMap:     newPairingMap(),
 		errorChan:      make(chan error),
-		LogChan:        make(chan interface{}),
+		LogChan:        make(chan interface{}, 100),
 		Done:           make(chan struct{}),
 	}
 }
