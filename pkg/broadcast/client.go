@@ -29,6 +29,11 @@ func (c *GameClient) Updates() chan<- GameUpdate {
 // Close client
 func (c *GameClient) Close() {
 	close(c.updates)
+	select {
+	case c.done <- struct{}{}:
+	default:
+	}
+	close(c.done)
 }
 
 func (c *RoundClient) Updates() chan<- GameUpdate {
@@ -37,5 +42,9 @@ func (c *RoundClient) Updates() chan<- GameUpdate {
 
 func (c *RoundClient) Close() {
 	close(c.updates)
-	c.done <- struct{}{}
+	select {
+	case c.done <- struct{}{}:
+	default:
+	}
+	close(c.done)
 }
