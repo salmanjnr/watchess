@@ -14,7 +14,7 @@ import (
 	"watchess.org/watchess/pkg/models"
 )
 
-type fakeGameModel struct{
+type fakeGameModel struct {
 	gameID int
 }
 
@@ -25,7 +25,7 @@ func (m *fakeGameModel) Insert(a, b string, c *models.GameResult, d, e, f string
 	return m.gameID, nil
 }
 
-type fakeMatchModel struct{
+type fakeMatchModel struct {
 	matchID int
 }
 

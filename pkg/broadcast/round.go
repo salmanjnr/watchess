@@ -43,7 +43,7 @@ func (f pgnFetcher) fetch() (io.Reader, error) {
 }
 
 type Round struct {
-	roundID int
+	roundID   int
 	isRunning bool
 	// Maximum time without updates in pgn source before the round closes itself
 	idleTimeout time.Duration
@@ -171,7 +171,7 @@ func (r *Round) CreateGameClient(gameID int) (*GameClient, error) {
 	c := &GameClient{
 		broker:  gc,
 		updates: make(chan GameUpdate),
-		done: make(chan struct{}),
+		done:    make(chan struct{}),
 	}
 
 	gc.registerChan <- c
@@ -190,7 +190,7 @@ func (r *Round) CreateRoundClient() (*RoundClient, error) {
 	c := &RoundClient{
 		broker:  r.roundBroker,
 		updates: make(chan GameUpdate),
-		done: make(chan struct{}),
+		done:    make(chan struct{}),
 	}
 
 	r.roundBroker.registerChan <- c
