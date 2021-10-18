@@ -2,7 +2,7 @@ CREATE TABLE games (
 	id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	white TEXT NOT NULL,
 	black TEXT NOT NULL,
-	result ENUM("1-0", "0.5-0.5", "0-1"),
+	result ENUM("*", "1-0", "1/2-1/2", "0-1") DEFAULT "*" NOT NULL,
 	white_match_side TEXT NOT NULL,
 	black_match_side TEXT NOT NULL,
 	match_id INTEGER NOT NULL,
