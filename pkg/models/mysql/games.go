@@ -10,18 +10,10 @@ type GameModel struct {
 	DB *sql.DB
 }
 
-func (m *GameModel) Insert(white, black string, res *models.GameResult, whiteMatchSide, blackMatchSide, pgn string, matchID, roundID int) (int, error) {
+func (m *GameModel) Insert(white, black string, res models.GameResult, whiteMatchSide, blackMatchSide, pgn string, matchID, roundID int) (int, error) {
 	stmt := `INSERT INTO games (white, black, result, white_match_side, black_match_side, pgn, match_id, round_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
 
-	var resStr sql.NullString
-
-	if res != nil {
-		resStr = sql.NullString{String: res.String(), Valid: true}
-	} else {
-		resStr = sql.NullString{}
-	}
-
-	result, err := m.DB.Exec(stmt, white, black, resStr, whiteMatchSide, blackMatchSide, pgn, matchID, roundID)
+	result, err := m.DB.Exec(stmt, white, black, res.String(), whiteMatchSide, blackMatchSide, pgn, matchID, roundID)
 
 	if err != nil {
 		return 0, err
@@ -39,7 +31,7 @@ func (m *GameModel) Get(id int) (*models.Game, error) {
 
 	row := m.DB.QueryRow(stmt, id)
 	g := &models.Game{}
-	var res sql.NullString
+	var res string
 	err := row.Scan(
 		&g.ID,
 		&g.White,
@@ -58,12 +50,11 @@ func (m *GameModel) Get(id int) (*models.Game, error) {
 		return nil, err
 	}
 
-	if res.Valid {
-		g.Result, err = models.GetGameResult(res.String)
-		if err != nil {
-			return nil, err
-		}
+	gRes, err := models.GetGameResult(res)
+	if err != nil {
+		return nil, err
 	}
+	g.Result = *gRes
 
 	return g, err
 }
@@ -83,7 +74,7 @@ func (m *GameModel) GetByMatch(matchID int) ([]*models.Game, error) {
 
 	for rows.Next() {
 		g := &models.Game{}
-		var res sql.NullString
+		var res string
 		err = rows.Scan(
 			&g.ID,
 			&g.White,
@@ -99,12 +90,11 @@ func (m *GameModel) GetByMatch(matchID int) ([]*models.Game, error) {
 			return nil, err
 		}
 
-		if res.Valid {
-			g.Result, err = models.GetGameResult(res.String)
-			if err != nil {
-				return nil, err
-			}
+		gRes, err := models.GetGameResult(res)
+		if err != nil {
+			return nil, err
 		}
+		g.Result = *gRes
 
 		games = append(games, g)
 	}
@@ -131,7 +121,7 @@ func (m *GameModel) GetByRound(roundID int) ([]*models.Game, error) {
 
 	for rows.Next() {
 		g := &models.Game{}
-		var res sql.NullString
+		var res string
 		err = rows.Scan(
 			&g.ID,
 			&g.White,
@@ -147,12 +137,11 @@ func (m *GameModel) GetByRound(roundID int) ([]*models.Game, error) {
 			return nil, err
 		}
 
-		if res.Valid {
-			g.Result, err = models.GetGameResult(res.String)
-			if err != nil {
-				return nil, err
-			}
+		gRes, err := models.GetGameResult(res)
+		if err != nil {
+			return nil, err
 		}
+		g.Result = *gRes
 
 		games = append(games, g)
 	}
@@ -195,5 +184,29 @@ func (m *GameModel) Update(id int, pgn, gameResult *string) error {
 		return err
 	}
 
+	return nil
+}
+
+func (m *GameModel) Delete(id int) error {
+	stmt := "DELETE FROM games WHERE id = ?"
+	_, err := m.DB.Exec(stmt, id)
+	if err != nil {
+		return err
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *GameModel) DeleteByRound(roundID int) error {
+	stmt := "DELETE FROM games WHERE round_id = ?"
+	_, err := m.DB.Exec(stmt, roundID)
+	if err != nil {
+		return err
+	}
+	if err != nil {
+		return err
+	}
 	return nil
 }

@@ -18,7 +18,7 @@ type fakeGameModel struct {
 	gameID int
 }
 
-func (m *fakeGameModel) Insert(a, b string, c *models.GameResult, d, e, f string, g, h int) (int, error) {
+func (m *fakeGameModel) Insert(a, b string, c models.GameResult, d, e, f string, g, h int) (int, error) {
 	defer func() {
 		m.gameID += 1
 	}()

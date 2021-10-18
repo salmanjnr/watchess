@@ -27,7 +27,7 @@ func GetUserRoleStrings() []string {
 }
 
 func GetGameResultStrings() []string {
-	return []string{"1-0", "0.5-0.5", "0-1"}
+	return []string{"*", "1-0", "1/2-1/2", "0-1"}
 }
 
 const (
@@ -36,7 +36,8 @@ const (
 )
 
 const (
-	WhiteWin GameResult = iota
+	Missing GameResult = iota
+	WhiteWin
 	Draw
 	BlackWin
 )
@@ -71,7 +72,7 @@ func (role UserRole) String() string {
 }
 
 func (res GameResult) String() string {
-	if res > 2 {
+	if int(res) > len(GetGameResultStrings()) {
 		return "Unknown"
 	}
 	return GetGameResultStrings()[res]
@@ -116,10 +117,10 @@ type Match struct {
 }
 
 type Game struct {
-	ID     int         `json:"id"`
-	White  string      `json:"white"`
-	Black  string      `json:"black"`
-	Result *GameResult `json:"result"`
+	ID     int        `json:"id"`
+	White  string     `json:"white"`
+	Black  string     `json:"black"`
+	Result GameResult `json:"result"`
 	// The side at which white player in Game model will be matched against in Match model
 	// In case of a normal match this will just be player's name
 	// In case of a team match this will be team name

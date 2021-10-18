@@ -35,7 +35,9 @@ CREATE TABLE rounds (
 	black_reward_l FLOAT NOT NULL,
 	start_date DATETIME NOT NULL,
 	tournament_id INTEGER NOT NULL,
+	CONSTRAINT fk_tournament_id
 	FOREIGN KEY (tournament_id) REFERENCES tournaments(id)
+	ON DELETE CASCADE
 );
 
 CREATE INDEX idx_round_tournament ON rounds(tournament_id);
@@ -55,6 +57,7 @@ CREATE TABLE matches (
 	round_id INTEGER NOT NULL,
 	CONSTRAINT fk_round_id
 	FOREIGN KEY (round_id) REFERENCES rounds(id)
+	ON DELETE CASCADE
 );
 
 CREATE INDEX idx_match_round ON matches(round_id);
@@ -63,15 +66,17 @@ CREATE TABLE games (
 	id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	white TEXT NOT NULL,
 	black TEXT NOT NULL,
-	result ENUM("1-0", "0.5-0.5", "0-1"),
+	result ENUM("*", "1-0", "1/2-1/2", "0-1") DEFAULT "*" NOT NULL,
 	white_match_side TEXT NOT NULL,
 	black_match_side TEXT NOT NULL,
 	match_id INTEGER NOT NULL,
 	CONSTRAINT fk_game_match_id
-	FOREIGN KEY (match_id) REFERENCES matches(id),
+	FOREIGN KEY (match_id) REFERENCES matches(id)
+	ON DELETE CASCADE,
 	round_id INTEGER NOT NULL,
 	CONSTRAINT fk_game_round_id
 	FOREIGN KEY (round_id) REFERENCES rounds(id)
+	ON DELETE CASCADE
 );
 
 CREATE INDEX idx_game_match ON games(match_id);
@@ -346,7 +351,7 @@ INSERT INTO games (
 ) VALUES (
 	'Ian Nepo',
 	'Magnus Carlsen',
-	'0.5-0.5',
+	'1/2-1/2',
 	'Ian Nepo',
 	'Magnus Carlsen',
 	'Test',

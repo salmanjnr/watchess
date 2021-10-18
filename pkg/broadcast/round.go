@@ -59,7 +59,7 @@ type Round struct {
 		Insert(string, string, int) (int, error)
 	}
 	gameModel interface {
-		Insert(string, string, *models.GameResult, string, string, string, int, int) (int, error)
+		Insert(string, string, models.GameResult, string, string, string, int, int) (int, error)
 	}
 	roundBroker *roundBroker
 	pairingMap  safePairingMap
@@ -122,17 +122,14 @@ func (r *Round) createGame(gm *chess.Game) (matchCreated bool, gameCreated bool,
 		}
 	}
 
-	var gameRes *models.GameResult = nil
-	if res != "*" {
-		gameRes, err = models.GetGameResult(res)
-		if err != nil {
-			return
-		}
+	gameRes, err := models.GetGameResult(res)
+	if err != nil {
+		return
 	}
 
 	playerSides := p.getPlayerSideMap()
 
-	gameID, err := r.gameModel.Insert(white, black, gameRes, playerSides[white], playerSides[black], gm.String(), matchID, r.roundID)
+	gameID, err := r.gameModel.Insert(white, black, *gameRes, playerSides[white], playerSides[black], gm.String(), matchID, r.roundID)
 
 	if err != nil {
 		return
@@ -140,7 +137,7 @@ func (r *Round) createGame(gm *chess.Game) (matchCreated bool, gameCreated bool,
 	gameCreated = true
 	// Only create a game broker if the game is not already finished
 	var gBroker *gameBroker
-	if gameRes == nil {
+	if res == "*" {
 		gBroker = &gameBroker{newBroker()}
 		err = r.gBrokerMap.create(gameID, gBroker)
 		if err != nil {
