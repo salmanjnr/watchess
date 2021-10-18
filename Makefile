@@ -2,6 +2,7 @@ db-user = dev
 db-pass = devpass
 
 build:
+	npm run gulp --prefix ui/
 	find cmd/web/ -name '*.go' -not -path '*_test.go' | xargs go build -o bin/server
 
 run:
