@@ -5,6 +5,7 @@ CREATE TABLE matches (
 	round_id INTEGER NOT NULL,
 	CONSTRAINT fk_round_id
 	FOREIGN KEY (round_id) REFERENCES rounds(id)
+	ON DELETE CASCADE
 );
 
 CREATE INDEX idx_match_round ON matches(round_id);

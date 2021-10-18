@@ -7,10 +7,12 @@ CREATE TABLE games (
 	black_match_side TEXT NOT NULL,
 	match_id INTEGER NOT NULL,
 	CONSTRAINT fk_game_match_id
-	FOREIGN KEY (match_id) REFERENCES matches(id),
+	FOREIGN KEY (match_id) REFERENCES matches(id)
+	ON DELETE CASCADE,
 	round_id INTEGER NOT NULL,
 	CONSTRAINT fk_game_round_id
 	FOREIGN KEY (round_id) REFERENCES rounds(id)
+	ON DELETE CASCADE
 );
 
 CREATE INDEX idx_game_match ON games(match_id);

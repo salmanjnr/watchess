@@ -10,7 +10,9 @@ CREATE TABLE rounds (
 	black_reward_l FLOAT NOT NULL,
 	start_date DATETIME NOT NULL,
 	tournament_id INTEGER NOT NULL,
+	CONSTRAINT fk_tournament_id
 	FOREIGN KEY (tournament_id) REFERENCES tournaments(id)
+	ON DELETE CASCADE
 );
 
 CREATE INDEX idx_round_tournament ON rounds(tournament_id);
