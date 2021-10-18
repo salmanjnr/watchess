@@ -79,3 +79,15 @@ func (m *RoundModel) GetByTournament(tournamentId int) ([]*models.Round, error) 
 
 	return rounds, nil
 }
+
+func (m *RoundModel) Delete(id int) error {
+	stmt := "DELETE FROM rounds WHERE id = ?"
+	_, err := m.DB.Exec(stmt, id)
+	if err != nil {
+		return err
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}
