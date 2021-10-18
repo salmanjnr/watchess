@@ -163,3 +163,37 @@ func (m *GameModel) GetByRound(roundID int) ([]*models.Game, error) {
 
 	return games, err
 }
+
+func (m *GameModel) Update(id int, pgn, gameResult *string) error {
+	if (pgn == nil) && (gameResult == nil) {
+		return nil
+	}
+	stmt := "UPDATE games SET"
+	var params []interface{}
+	if pgn != nil {
+		stmt += " pgn = ?"
+		params = append(params, *pgn)
+	}
+	if gameResult != nil {
+		if pgn != nil {
+			stmt += ","
+		}
+		stmt += " result = ?"
+		params = append(params, *gameResult)
+	}
+	params = append(params, id)
+	stmt += " WHERE id = ?"
+
+	result, err := m.DB.Exec(stmt, params...)
+	if err != nil {
+		return err
+	}
+	n, err := result.RowsAffected()
+	if n == 0 {
+		return models.ErrNoRecord
+	} else if err != nil {
+		return err
+	}
+
+	return nil
+}

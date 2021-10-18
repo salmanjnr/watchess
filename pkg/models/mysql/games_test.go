@@ -105,7 +105,7 @@ func TestGameModelInsert(t *testing.T) {
 			gameID, err := m.Insert(tt.game.White, tt.game.Black, tt.game.Result, tt.game.WhiteMatchSide, tt.game.BlackMatchSide, tt.game.PGN, tt.game.MatchID, tt.game.RoundID)
 
 			if err != tt.wantError {
-				t.Errorf("want %v; got %s", tt.wantError, err)
+				t.Errorf("want %v; got %v", tt.wantError, err)
 			}
 
 			game, err := m.Get(gameID)
@@ -256,4 +256,147 @@ func TestGameModelGetByRound(t *testing.T) {
 		})
 	}
 
+}
+
+func TestGameModelUpdate(t *testing.T) {
+	if testing.Short() {
+		t.Skip("mysql: skipping integration test")
+	}
+
+	getStringRef := func(s string) *string {
+		return &s
+	}
+
+	tests := []struct {
+		name         string
+		gameID       int
+		updateValues struct {
+			pgn    *string
+			result *string
+		}
+		wantGame  *models.Game
+		wantError error
+	}{
+		{
+			name:   "Valid PGN",
+			gameID: 4,
+			updateValues: struct {
+				pgn    *string
+				result *string
+			}{
+				pgn: getStringRef("Hello"),
+			},
+			wantGame: &models.Game{
+				ID:             4,
+				White:          "Alireza",
+				Black:          "Richard",
+				Result:         getGameResult("0-1"),
+				WhiteMatchSide: "Alireza",
+				BlackMatchSide: "Richard",
+				PGN:            "Hello",
+				MatchID:        3,
+				RoundID:        2,
+			},
+			wantError: nil,
+		},
+		{
+			name:   "Valid Result",
+			gameID: 4,
+			updateValues: struct {
+				pgn    *string
+				result *string
+			}{
+				result: getStringRef("1-0"),
+			},
+			wantGame: &models.Game{
+				ID:             4,
+				White:          "Alireza",
+				Black:          "Richard",
+				Result:         getGameResult("1-0"),
+				WhiteMatchSide: "Alireza",
+				BlackMatchSide: "Richard",
+				PGN:            "Test",
+				MatchID:        3,
+				RoundID:        2,
+			},
+			wantError: nil,
+		},
+		{
+			name:   "Valid Both",
+			gameID: 4,
+			updateValues: struct {
+				pgn    *string
+				result *string
+			}{
+				pgn:    getStringRef("Hello"),
+				result: getStringRef("1-0"),
+			},
+			wantGame: &models.Game{
+				ID:             4,
+				White:          "Alireza",
+				Black:          "Richard",
+				Result:         getGameResult("1-0"),
+				WhiteMatchSide: "Alireza",
+				BlackMatchSide: "Richard",
+				PGN:            "Hello",
+				MatchID:        3,
+				RoundID:        2,
+			},
+			wantError: nil,
+		},
+		{
+			name:   "Zero ID",
+			gameID: 0,
+			updateValues: struct {
+				pgn    *string
+				result *string
+			}{
+				pgn:    getStringRef("Hello"),
+				result: getStringRef("1-0"),
+			},
+			wantGame:  nil,
+			wantError: models.ErrNoRecord,
+		},
+		{
+			name:   "Non-existent ID",
+			gameID: 6927,
+			updateValues: struct {
+				pgn    *string
+				result *string
+			}{
+				pgn:    getStringRef("Hello"),
+				result: getStringRef("1-0"),
+			},
+			wantGame:  nil,
+			wantError: models.ErrNoRecord,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			db, teardown := newTestDB(t)
+			defer teardown()
+
+			g := GameModel{db}
+
+			err := g.Update(tt.gameID, tt.updateValues.pgn, tt.updateValues.result)
+			if err != tt.wantError {
+				t.Errorf("want %v; got %s", tt.wantError, err)
+			}
+
+			if err != nil {
+				return
+			}
+
+			game, err2 := g.Get(tt.gameID)
+
+			if err2 != nil {
+				t.Errorf("Unexpected error when fetching game")
+			}
+
+			if !reflect.DeepEqual(game, tt.wantGame) {
+				t.Errorf("want %v; got %v", tt.wantGame, game)
+			}
+		})
+	}
 }
