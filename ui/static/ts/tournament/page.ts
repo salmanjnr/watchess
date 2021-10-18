@@ -1,4 +1,4 @@
-type GameResult = 0 | 1 | 2 | undefined;
+type GameResult = 0 | 1 | 2 | 3;
 type RoundID = string;
 type MatchID = string;
 type GameID = string;
@@ -68,11 +68,11 @@ const getMatchResultClass = function(result: Result, side1: string, side2: strin
 
 const getGameResultArr = function(result: GameResult) {
 	switch(result) {
-		case 0:
-			return [1, 0]
 		case 1:
-			return [0.5, 0.5]
+			return [1, 0]
 		case 2:
+			return [0.5, 0.5]
+		case 3:
 			return [0, 1]
 		default:
 			return [0, 0]
@@ -81,11 +81,11 @@ const getGameResultArr = function(result: GameResult) {
 
 const getGameResultString = function(result: GameResult) {
 	switch(result) {
-		case 0:
-			return "1 - 0"
 		case 1:
-			return "0.5 - 0.5"
+			return "1 - 0"
 		case 2:
+			return "1/2 - 1/2"
+		case 3:
 			return "0 - 1"
 		default:
 			return "-"
