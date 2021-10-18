@@ -22,9 +22,9 @@ func (gs gameSlice) String() string {
 	return s + "]"
 }
 
-func getGameResult(res string) *models.GameResult {
+func getGameResult(res string) models.GameResult {
 	result, _ := models.GetGameResult(res)
-	return result
+	return *result
 }
 
 func TestGameModelInsert(t *testing.T) {
@@ -56,7 +56,7 @@ func TestGameModelInsert(t *testing.T) {
 			game: &models.Game{
 				White:          "Foo1",
 				Black:          "Foo2",
-				Result:         getGameResult("0.5-0.5"),
+				Result:         getGameResult("1/2-1/2"),
 				WhiteMatchSide: "Foo1",
 				BlackMatchSide: "Foo2",
 				PGN:            "Test",
@@ -71,20 +71,6 @@ func TestGameModelInsert(t *testing.T) {
 				White:          "Foo1",
 				Black:          "Foo2",
 				Result:         getGameResult("0-1"),
-				WhiteMatchSide: "Foo1",
-				BlackMatchSide: "Foo2",
-				PGN:            "Test",
-				MatchID:        1,
-				RoundID:        1,
-			},
-			wantError: nil,
-		},
-		{
-			name: "ValidNoResult",
-			game: &models.Game{
-				White:          "Foo1",
-				Black:          "Foo2",
-				Result:         nil,
 				WhiteMatchSide: "Foo1",
 				BlackMatchSide: "Foo2",
 				PGN:            "Test",
@@ -214,7 +200,7 @@ func TestGameModelGetByRound(t *testing.T) {
 					ID:             2,
 					White:          "Ian Nepo",
 					Black:          "Magnus Carlsen",
-					Result:         getGameResult("0.5-0.5"),
+					Result:         getGameResult("1/2-1/2"),
 					WhiteMatchSide: "Ian Nepo",
 					BlackMatchSide: "Magnus Carlsen",
 					PGN:            "Test",
@@ -391,11 +377,96 @@ func TestGameModelUpdate(t *testing.T) {
 			game, err2 := g.Get(tt.gameID)
 
 			if err2 != nil {
-				t.Errorf("Unexpected error when fetching game")
+				t.Errorf("Unexpected error when fetching game %v", err2)
 			}
 
 			if !reflect.DeepEqual(game, tt.wantGame) {
 				t.Errorf("want %v; got %v", tt.wantGame, game)
+			}
+		})
+	}
+}
+
+func TestGameModelDelete(t *testing.T) {
+	if testing.Short() {
+		t.Skip("mysql: skipping integration test")
+	}
+
+	tests := []struct {
+		name      string
+		gameID    int
+		wantError error
+	}{
+		{
+			name:      "Valid",
+			gameID:    4,
+			wantError: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			db, teardown := newTestDB(t)
+			defer teardown()
+
+			g := GameModel{db}
+
+			err := g.Delete(tt.gameID)
+			if err != tt.wantError {
+				t.Errorf("want %v; got %s", tt.wantError, err)
+			}
+
+			if err != nil {
+				return
+			}
+
+			_, err2 := g.Get(tt.gameID)
+			if err2 != models.ErrNoRecord {
+				t.Errorf("Unexpected error when fetching game %v", err2)
+			}
+		})
+	}
+}
+
+func TestGameModelDeleteByRound(t *testing.T) {
+	if testing.Short() {
+		t.Skip("mysql: skipping integration test")
+	}
+
+	tests := []struct {
+		name      string
+		roundID   int
+		wantError error
+	}{
+		{
+			name:      "Valid",
+			roundID:   1,
+			wantError: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			db, teardown := newTestDB(t)
+			defer teardown()
+
+			g := GameModel{db}
+
+			err := g.DeleteByRound(tt.roundID)
+			if err != tt.wantError {
+				t.Errorf("want %v; got %s", tt.wantError, err)
+			}
+
+			if err != nil {
+				return
+			}
+
+			games, err2 := g.GetByRound(tt.roundID)
+			if err2 != nil {
+				t.Errorf("Unexpected error when fetching game %v", err2)
+			}
+			if len(games) != 0 {
+				t.Errorf("Unexpected number of games. want 0; got %d", len(games))
 			}
 		})
 	}
